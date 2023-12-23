@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react"
 import { Input } from "./Engine/Input"
+import { InputKeys } from "./Engine/enums"
 
 function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -11,7 +12,16 @@ function App() {
       const context: CanvasRenderingContext2D | null  = canvas.getContext('2d')
       if (!context) return;
 
-      const input = Input.Instance
+      Input.generate()
+
+      setInterval(()=>{
+        if(Input.keyDown(InputKeys.Space)){
+          console.log("x")
+        }
+        if(Input.keyPress(InputKeys.Space)){
+          console.log("#")
+        }
+      },10)
   },[])
 
   return (
