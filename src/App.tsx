@@ -1,5 +1,7 @@
 import { useEffect, useRef } from "react"
 import { Position } from "./Engine/middleware/Position"
+import { Geometry, Rect } from "./Engine/Geometry"
+import { Color } from "./Engine/middleware/Color"
 
 
 function App() {
@@ -11,10 +13,17 @@ function App() {
       const canvas = canvasRef.current
       const context: CanvasRenderingContext2D | null  = canvas.getContext('2d')
       if (!context) return;
-      const pos = new Position()
 
-      console.log(pos.info)
+      try {
 
+        context.clearRect(0,0, 800,600)
+        const pos = new Position(40,20)
+        const geo = new Rect(pos, 20, 30, Color.GREEN)
+        geo.draw(context)
+      } catch (error) {
+        console.error(error)
+      }
+      
       
   },[])
 
@@ -24,7 +33,7 @@ function App() {
         ref={canvasRef}
         width={800}
         height={600}
-        style={{border: "1px solid red"}}
+        style={{border: "1px solid black"}}
       />
     </>
   )

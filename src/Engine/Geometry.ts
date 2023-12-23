@@ -26,21 +26,42 @@ export abstract class Geometry{
 
 
 
-    draw(context: CanvasRenderingContext2D){
+    abstract draw(context: CanvasRenderingContext2D): void
+
+
+    // abstract get left(): number
+    // abstract get right(): number
+    // abstract get top(): number
+    // abstract get bottom(): number
+}
+
+
+export class Rect extends Geometry{
+    constructor(position: Position, 
+        protected _width: number, 
+        protected _height: number,
+        color: Color = Color.RED){
+            super(position, GeometryType.RECTANGLE, color)
+
+    }
+
+    get width():number{
+        return this._width
+    }
+
+    get height():number{
+        return this._height
     }
 
 
-    get left(){
-        throw new NotImplementError();
-    }
-    get right(){
-        throw new NotImplementError();
-    }
+    draw(context: CanvasRenderingContext2D): void {
+        context.save()
 
-    get top(){
-        throw new NotImplementError();
+
+        context.fillStyle = this.color.RGBA
+        context.fillRect(this.position.x, this.position.y, this.width,this.height)
+
+        context.restore()
     }
-    get bottom(){
-        throw new NotImplementError();
-    }
+    
 }
