@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react"
-import { Timer } from "./Engine/Timer"
+import { Position } from "./Engine/middleware/Position"
 
 
 function App() {
@@ -11,23 +11,11 @@ function App() {
       const canvas = canvasRef.current
       const context: CanvasRenderingContext2D | null  = canvas.getContext('2d')
       if (!context) return;
-      const timer = new Timer()
+      const pos = new Position()
 
-      setTimeout(()=>{
-        timer.stopTimer()
-      },2000)
+      console.log(pos.info)
 
-      setTimeout(()=>{
-        timer.startTimer()
-      },5000)
-
-      setTimeout(()=>{
-        timer.resetTimer()
-      },8000)
-
-      setInterval(()=>{
-          console.log(timer.getElapsedSeconds())
-      },500)
+      
   },[])
 
   return (
