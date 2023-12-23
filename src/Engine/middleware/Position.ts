@@ -9,6 +9,13 @@ export class Position{
         return this._y
     }
 
+    set x(xx: number){
+        this._x = xx
+    }
+    set y(yy:number){
+        this._y = yy
+    }
+
     get info(): string{
         return `(x: ${this.x}, y: ${this.y})`
     }
