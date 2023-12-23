@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react"
-import { Input } from "./Engine/Input"
-import { InputKeys } from "./Engine/enums"
+import { Timer } from "./Engine/Timer"
+
 
 function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -11,14 +11,23 @@ function App() {
       const canvas = canvasRef.current
       const context: CanvasRenderingContext2D | null  = canvas.getContext('2d')
       if (!context) return;
+      const timer = new Timer()
 
-      Input.generate()
+      setTimeout(()=>{
+        timer.stopTimer()
+      },2000)
+
+      setTimeout(()=>{
+        timer.startTimer()
+      },5000)
+
+      setTimeout(()=>{
+        timer.resetTimer()
+      },8000)
 
       setInterval(()=>{
-        if(Input.keyPress(InputKeys.Space)){
-          console.log("Espaço")
-        }
-      },10)
+          console.log(timer.getElapsedSeconds())
+      },500)
   },[])
 
   return (
