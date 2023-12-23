@@ -1,14 +1,15 @@
-import { NotImplementError } from "./Errors";
 import { GeometryType } from "./enums/GeometryType";
 import { Color } from "./middleware/Color";
+import { Movable } from "./middleware/Movable";
 import { Position } from "./middleware/Position";
 
-export abstract class Geometry{
+export abstract class Geometry extends Movable{
 
     constructor(
-        protected _position: Position, 
+        position: Position, 
         protected _type: GeometryType, 
         protected _color: Color = Color.BLUE){
+            super(position)
     }
 
 
@@ -19,11 +20,6 @@ export abstract class Geometry{
     get type():GeometryType{
         return this._type
     }
-
-    get position():Position{
-        return this._position
-    }
-
 
 
     abstract draw(context: CanvasRenderingContext2D): void
@@ -55,13 +51,11 @@ export class Rect extends Geometry{
 
 
     draw(context: CanvasRenderingContext2D): void {
-        context.save()
 
 
         context.fillStyle = this.color.RGBA
         context.fillRect(this.position.x, this.position.y, this.width,this.height)
 
-        context.restore()
     }
     
 }

@@ -7,18 +7,18 @@ export abstract class Movable{
 
     constructor(
         protected _position: Position,
-        protected _speed: Vector,
+        protected _speed: Vector = Vector.Zero,
     ){
         this._positionInitial = new Position(_position.x, _position.y)
     }
 
     //----------------------
-    moveTo(position: Position):void{
+    public moveTo(position: Position):void{
         this._position.x = position.x
         this._position.y = position.y
     }
 
-    translateTo(delta: Vector){
+    public translateTo(delta: Vector){
         this._position.x += delta.x
         this._position.y += delta.y
     }
