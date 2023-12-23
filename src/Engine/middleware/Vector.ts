@@ -40,6 +40,9 @@ export class Vector{
         this._y *=-proportion
     }
 
+    copy():Vector{
+        return new Vector(this.x, this.y)
+    }
 
     //atributos staticos
 

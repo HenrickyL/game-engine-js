@@ -3,13 +3,18 @@ import { Vector } from "./Vector";
 
 export abstract class Movable{
     protected _rotateRad = 0
+    protected _anchor: Position
     protected _positionInitial
-
+    protected _position: Position
+    protected _speed: Vector = Vector.Zero
     constructor(
-        protected _position: Position,
-        protected _speed: Vector = Vector.Zero,
+        position: Position,
+        speed: Vector = Vector.Zero,
     ){
-        this._positionInitial = new Position(_position.x, _position.y)
+        this._position = position.copy()
+        this._anchor = this._position.copy()
+        this._speed = speed.copy()
+        this._positionInitial = this._position.copy()
     }
 
     //----------------------
@@ -50,5 +55,21 @@ export abstract class Movable{
     }
     set rotateAngle(angle:number){
         this._rotateRad = angle*Math.PI/180
+    }
+
+
+    get anchor(): Position{
+        return this._anchor
+    }
+
+    set anchor(pos:Position){
+        this._anchor = pos
+    }
+    set anchorX(value:number){
+        this._anchor.x = value
+    }
+
+    set anchorY(value:number){
+        this._anchor.y = value
     }
 }
