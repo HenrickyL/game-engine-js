@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react"
+import { Input } from "./Engine/Input"
 
 function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -10,11 +11,17 @@ function App() {
       const context: CanvasRenderingContext2D | null  = canvas.getContext('2d')
       if (!context) return;
 
+      const input = Input.Instance
   },[])
 
   return (
     <>
-      <canvas></canvas>
+      <canvas 
+        ref={canvasRef}
+        width={800}
+        height={600}
+        style={{border: "1px solid red"}}
+      />
     </>
   )
 }
