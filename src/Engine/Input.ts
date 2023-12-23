@@ -1,11 +1,10 @@
-//singleton
 import {InputKeys } from './enums'
 
-
+//singleton
 export class Input{
     private static instance: Input | null = null
-    private static  keys: {[key in InputKeys]: boolean };
-    private static  ctrl: {[key in InputKeys]: boolean };
+    private static keys: {[key in InputKeys]: boolean };
+    private static ctrl: {[key in InputKeys]: boolean };
 
     private constructor(){
         Input.keys = Object.keys(InputKeys).reduce((acc, key) => {
@@ -14,9 +13,9 @@ export class Input{
           }, {} as { [key in InputKeys]: boolean });
 
         Input.ctrl = Object.keys(InputKeys).reduce((acc, key) => {
-        acc[key as InputKeys] = false;
-        return acc;
-        }, {} as { [key in InputKeys]: boolean });
+            acc[key as InputKeys] = false;
+            return acc;
+         }, {} as { [key in InputKeys]: boolean });
 
         this.eventHandle()
     }
@@ -37,7 +36,7 @@ export class Input{
         Input.ctrl[key] = false
     }
 
-
+//--------------------------------
     static keyDown(keyCode: InputKeys): boolean{
         return Input.keys[keyCode]
     }   

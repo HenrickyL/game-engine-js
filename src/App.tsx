@@ -15,11 +15,8 @@ function App() {
       Input.generate()
 
       setInterval(()=>{
-        if(Input.keyDown(InputKeys.Space)){
-          console.log("x")
-        }
         if(Input.keyPress(InputKeys.Space)){
-          console.log("#")
+          console.log("Espaço")
         }
       },10)
   },[])
