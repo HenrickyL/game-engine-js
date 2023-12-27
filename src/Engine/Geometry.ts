@@ -51,7 +51,6 @@ export class Rect extends Geometry{
         protected _height: number,
         color: Color = Color.BLUE){
             super(position, GeometryType.RECTANGLE, color)
-
     }
 
     get width():number{
@@ -65,7 +64,6 @@ export class Rect extends Geometry{
 
     draw(context: CanvasRenderingContext2D): void {
         context.save()
-
         this.rotateAroundAnchor(context)
         const halfWidth = this.width/2
         const halfHeight = this.height/2
@@ -94,7 +92,6 @@ export class Point extends Geometry{
         color: Color = Color.RED){
             super(position, GeometryType.POINT, color)
             this._isSquare = isSquare
-
     }
 
     set size(value: number){
@@ -119,9 +116,7 @@ export class Point extends Geometry{
             context.arc(0, 0, this.size/2, 0, Math.PI * 2);
             context.fill();
             context.closePath();
-
         }
-
         context.restore()
     }
 
@@ -139,7 +134,6 @@ export class Circle extends Geometry{
             super(position, GeometryType.CIRCLE, color)
             this._radius = radius
             this._isFill = isFill
-
     }
 
     set radius(value: number){
@@ -194,7 +188,6 @@ export class Line extends Geometry{
         return this._initial
     }
 
-
     draw(context: CanvasRenderingContext2D): void {
         context.save()
         this.rotateAroundAnchor(context)
@@ -219,11 +212,10 @@ export class Polygon extends Geometry{
         position: Position,
         points: Position[],
         color: Color = Color.BLUE, isFill: boolean = true ){
-            super(position, GeometryType.LINE, color)
+            super(position, GeometryType.POLYGON, color)
             this._points = points
             this._isFill = isFill
     }
-
 
     get points():Position[]{
         return this._points
