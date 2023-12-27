@@ -30,6 +30,11 @@ export abstract class Geometry extends Movable{
     set strokeColor(color:Color){
         this._strokeColor = color
     }
+    protected rotateAroundAnchor(context:CanvasRenderingContext2D):void{
+        context.translate(this.anchor.x, this.anchor.y);
+        context.rotate(this._rotateRad);
+        context.translate(-this.anchor.x, -this.anchor.y);
+    }
 
     abstract draw(context: CanvasRenderingContext2D): void
 
@@ -61,9 +66,7 @@ export class Rect extends Geometry{
     draw(context: CanvasRenderingContext2D): void {
         context.save()
 
-        context.translate(this.anchor.x, this.anchor.y);
-        context.rotate(this._rotateRad);
-        context.translate(-this.anchor.x, -this.anchor.y);
+        this.rotateAroundAnchor(context)
         const halfWidth = this.width/2
         const halfHeight = this.height/2
 
@@ -110,7 +113,7 @@ export class Point extends Geometry{
         context.fillStyle = this.color.RGBA;
 
         if (this._isSquare) {
-            context.fillRect(-this.size/2, -this.size/2, this.size, this.size);
+            context.fillRect(-this.size/2,-this.size/2, this.size, this.size);
         } else {
             context.beginPath();
             context.arc(0, 0, this.size/2, 0, Math.PI * 2);
@@ -150,9 +153,7 @@ export class Circle extends Geometry{
 
     draw(context: CanvasRenderingContext2D): void {
         context.save()
-        context.translate(this.anchor.x, this.anchor.y);
-        context.rotate(this._rotateRad);
-        context.translate(-this.anchor.x, -this.anchor.y);
+        this.rotateAroundAnchor(context)
 
         const halfRadius = this._radius/2
         context.beginPath();
@@ -196,9 +197,8 @@ export class Line extends Geometry{
 
     draw(context: CanvasRenderingContext2D): void {
         context.save()
-        context.translate(this.anchor.x, this.anchor.y);
-        context.rotate(this._rotateRad);
-        context.translate(-this.anchor.x, -this.anchor.y);
+        this.rotateAroundAnchor(context)
+
         context.beginPath();
         context.moveTo(this._initial.x, this._initial.y)
         context.lineTo(this._final.x, this._final.y)
@@ -247,9 +247,8 @@ export class Polygon extends Geometry{
         if(this.points.length <= 2)
             throw new PolygonEdgesError
         context.save()
-        context.translate(this.anchor.x, this.anchor.y);
-        context.rotate(this._rotateRad);
-        context.translate(-this.anchor.x, -this.anchor.y);
+        this.rotateAroundAnchor(context)
+
         context.beginPath();
         this.points.forEach((point, i)=>{
             if(i === 0){
