@@ -7,6 +7,7 @@ export abstract class Movable{
     protected _positionInitial
     protected _position: Position
     protected _speed: Vector = Vector.Zero
+    protected _speedMag: number = 0
     constructor(
         position: Position,
         speed: Vector = Vector.Zero,
@@ -49,6 +50,18 @@ export abstract class Movable{
 
     get speed():Vector{
         return this._speed
+    }
+    set speed(unit: Vector){
+        this._speed = unit
+    }
+    get speedFinal():Vector{
+        return this._speed.prod(this._speedMag)
+    }
+    set speedMag(value: number){
+        this._speedMag = value
+    }
+    get speedMag():number{
+        return this._speedMag
     }
     get rotateAngle(): number{
         return this._rotateRad * 180/ Math.PI

@@ -35,6 +35,7 @@ export class Vector{
     invertX(proportion: number = 1){
         this._x *=-proportion
     }
+    
 
     invertY(proportion:number = 1){
         this._y *=-proportion
@@ -42,6 +43,9 @@ export class Vector{
 
     copy():Vector{
         return new Vector(this.x, this.y)
+    }
+    inverse():Vector{
+        return new Vector(-this._x, -this._y)
     }
 
     //atributos staticos

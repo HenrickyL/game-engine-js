@@ -7,18 +7,23 @@ import { IGame } from "./interfaces/IGame";
 
 export class Engine{
     //fps
-    //graphic
-    //gameloop
-    //game
+    private _isVariableRate: boolean
+    private _frameRate: number = 60
+    private _frameDuration: number = 1000/60
+    private _lastTime: number = 0
+    private _elapsed: number = 0
+    private _frames: number = 0
+    //
     private _game : IGame | undefined
-    private _graphics : Graphics | undefined
+    private _graphics : Graphics  = new Graphics()
     private _screenWidth: number = 800
     private _screenHeight: number = 600
     private _timer : Timer
     private _onPause: boolean = false
 
-    constructor(){
+    constructor(isVariableRate = false){
         this._timer = new Timer()
+        this._isVariableRate = isVariableRate
     }
 
 
@@ -33,19 +38,53 @@ export class Engine{
         if(!this._game){
             throw new GameNotDefinedInEngineError()
         }
+        this._game.init(this._graphics)
         this._timer.resetTimer()
-        requestAnimationFrame(this.mainLoop)
+
+        requestAnimationFrame(this._isVariableRate ?
+            this.mainLoopVariable: this.mainLoopConstant)
+
+        this._timer.stopTimer()
+    }
+
+    private mainLoopVariable = (timestamp:number)=>{
+        const elapsed = timestamp - this._lastTime
+        this._lastTime = timestamp
+        this._elapsed += elapsed
+        this._frames++
+        if(this._elapsed > 1000){
+            this.frameRate = Math.floor((this._frames / this._elapsed)*1000)
+            this._frames = 0
+            this._elapsed = 0
+        }
+        this.mainLoop(elapsed)
+        requestAnimationFrame(this.mainLoopVariable)
+
+    }
+
+    private mainLoopConstant = (timestamp:number)=>{
+        const currentTime = timestamp || 0
+        const elapsed = currentTime - this._lastTime
+        this.mainLoop(elapsed)
+        this._lastTime = currentTime - (elapsed % this._frameDuration);
+        requestAnimationFrame(this.mainLoopConstant)
     }
 
 
-    private mainLoop = ()=>{
+    private mainLoop = (elapsed: number)=>{
         this.verifyPause()
         if(this._game && this._graphics && this._graphics.context && !this._onPause){
             this._game.update()
-            this._graphics.clear()
-            this._game.draw(this._graphics.context)
+            console.log(this.frameRate)
+            if(this._isVariableRate){
+                this._graphics.clear()
+                this._game.draw(this._graphics.context)
+            }else if(!this._isVariableRate && elapsed > this._frameDuration){
+                this._graphics.clear()
+                this._game.draw(this._graphics.context)
+                return
+            }
         }
-        requestAnimationFrame(this.mainLoop)
     }
 
     private verifyPause():void{
@@ -70,5 +109,14 @@ export class Engine{
     }
     get screenWidth():number{
         return this._screenWidth
+    }
+
+    get frameRate():number{
+        return this._frameRate
+    }
+
+    set frameRate(value: number){
+        this._frameRate = value
+        this._frameDuration = 1000/this._frameRate
     }
 }

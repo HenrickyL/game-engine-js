@@ -20,7 +20,8 @@ function App() {
       const context: CanvasRenderingContext2D | null  = canvas.getContext('2d')
       if (!context) return;
       const game = new GameTest()
-      const engine = new Engine()
+      const engine = new Engine(true)
+      engine.frameRate = 120
       engine.start(game)
 
   },[])

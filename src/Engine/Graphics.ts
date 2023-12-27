@@ -23,7 +23,7 @@ export class Graphics{
         this._canvas = document.querySelector("canvas")
         this._context = this._canvas?.getContext('2d')
         this.resize()
-        this.calculateCornersAndCenters()
+        
     }
 
     get canvas():HTMLCanvasElement | null {
@@ -39,10 +39,17 @@ export class Graphics{
     get height(): number{
         return this._height
     }
+
+    setScreen(width: number, height: number){
+        this._width = width
+        this._height = height
+        this.resize();
+    }
     private resize():void{
         if(this._canvas){
             this._canvas.width = this._width
             this._canvas.height = this._height
+            this.calculateCornersAndCenters()
         }
     }
 
