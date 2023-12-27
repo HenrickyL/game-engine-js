@@ -19,3 +19,9 @@ export class PolygonEdgesError extends ThrowError{
         super("The polygon must have at least 3 edges.")
     }
 }
+
+export class GameNotDefinedInEngineError extends ThrowError{
+    constructor(){
+        super("No game provided. Please provide a valid game object to Engine.")
+    }
+}

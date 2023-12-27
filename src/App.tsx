@@ -6,6 +6,8 @@ import { Vector } from "./Engine/middleware/Vector"
 import { Input } from "./Engine/Input"
 import { InputKeys } from "./Engine/enums"
 import { Graphics } from "./Engine/Graphics"
+import { Engine } from "./Engine/Engine"
+import { GameTest } from "./Game/GameTest"
 
 
 function App() {
@@ -17,38 +19,9 @@ function App() {
       const canvas = canvasRef.current
       const context: CanvasRenderingContext2D | null  = canvas.getContext('2d')
       if (!context) return;
-
-      const graphics = new Graphics()
-
-
-      // Input.generate()
-      // const A = new Position(200,150)
-      // const B = new Position(300,450)
-      // const C = new Position(150,500)
-      // const center = new Position(400,300)
-
-      // const geo = new Polygon(center, [A,B, C], Color.BLUE)
-      // const pA = new Point(A, false)
-      // const pB = new Point(B, false)
-      // const pC = new Point(C, false)
-      // const pCenter = new Point(center, false, Color.GREEN)
-      // pCenter.position = geo.position
-
-      // let angle = 0
-      // // const c = new Point(geo.position)
-
-      // setInterval(()=>{
-      //   context.clearRect(0,0,800,600)
-      //   geo.rotateAngle = angle
-      //   angle++
-      //   handleInput(geo)
-      //   geo.draw(context)
-      //   pA.draw(context)
-      //   pB.draw(context)
-      //   pC.draw(context)
-      //   pCenter.draw(context)
-      // }, 50)
-
+      const game = new GameTest()
+      const engine = new Engine()
+      engine.start(game)
 
   },[])
 
