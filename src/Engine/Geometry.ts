@@ -7,8 +7,8 @@ export abstract class Geometry extends Movable{
     protected _lineSize: number = 2
     protected _strokeColor: Color = Color.BLACK
     constructor(
-        position: Position, 
-        protected _type: GeometryType, 
+        position: Position,
+        protected _type: GeometryType,
         protected _color: Color = Color.BLUE){
             super(position)
     }
@@ -39,8 +39,8 @@ export abstract class Geometry extends Movable{
 
 
 export class Rect extends Geometry{
-    constructor(position: Position, 
-        protected _width: number, 
+    constructor(position: Position,
+        protected _width: number,
         protected _height: number,
         color: Color = Color.BLUE){
             super(position, GeometryType.RECTANGLE, color)
@@ -58,7 +58,7 @@ export class Rect extends Geometry{
 
     draw(context: CanvasRenderingContext2D): void {
         context.save()
-        
+
         context.translate(this.anchor.x, this.anchor.y);
         context.rotate(this._rotateRad);
         context.translate(-this.anchor.x, -this.anchor.y);
@@ -74,7 +74,7 @@ export class Rect extends Geometry{
 
         context.restore()
     }
-    
+
 }
 
 
@@ -104,8 +104,9 @@ export class Point extends Geometry{
     draw(context: CanvasRenderingContext2D): void {
         context.save()
         context.translate(this.x, this.y);
+        context.rotate(this._rotateRad);
         context.fillStyle = this.color.RGBA;
-        
+
         if (this._isSquare) {
             context.fillRect(-this.size/2, -this.size/2, this.size, this.size);
         } else {
@@ -118,7 +119,7 @@ export class Point extends Geometry{
 
         context.restore()
     }
-    
+
 }
 
 
@@ -147,9 +148,13 @@ export class Circle extends Geometry{
 
     draw(context: CanvasRenderingContext2D): void {
         context.save()
-        context.translate(this.x, this.y);
+        context.translate(this.anchor.x, this.anchor.y);
+        context.rotate(this._rotateRad);
+        context.translate(-this.anchor.x, -this.anchor.y);
+
+        const halfRadius = this._radius/2
         context.beginPath();
-        context.arc(0, 0, this.radius, 0, Math.PI * 2);
+        context.arc(this.x -halfRadius,this.y -halfRadius, this.radius, 0, Math.PI * 2);
         context.closePath();
         if(this._isFill){
             context.fillStyle = this.color.RGBA;
@@ -159,7 +164,7 @@ export class Circle extends Geometry{
         context.stroke()
         context.restore()
     }
-    
+
 }
 
 
@@ -175,9 +180,10 @@ export class Line extends Geometry{
             super(initial, GeometryType.LINE, color)
             this._initial = initial
             this._final = final
+            this.position = Position.centerTo(initial, final)
     }
 
-    
+
     get initialPosition():Position{
         return this._initial
     }
@@ -196,5 +202,5 @@ export class Line extends Geometry{
         context.stroke()
         context.restore()
     }
-    
+
 }

@@ -16,23 +16,27 @@ function App() {
       if (!context) return;
 
 
-      const A = new Position(200,300)
-      const B = new Position(500,200)
+      const A = new Position(300,300)
+      const B = new Position(400,300)
 
-      const geo = new Line(A, B, Color.BLUE)
+      const geo = new Circle(A, 50, Color.BLUE)
+      geo.anchor = B
       const pA = new Point(A, false)
+      pA.position = geo.position
       const pB = new Point(B, false)
-      const c = new Point(geo.position)
+      let angle = 0
+      // const c = new Point(geo.position)
 
       setInterval(()=>{
         context.clearRect(0,0,800,600)
-
-        // anchor.x += offSetX
+        geo.rotateAngle = angle
+        angle++
+        console.log(geo.anchor)
 
         geo.draw(context)
         pA.draw(context)
         pB.draw(context)
-        c.draw(context)
+        // c.draw(context)
       }, 50)
 
 
