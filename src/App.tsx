@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react"
 import { Position } from "./Engine/middleware/Position"
-import { Geometry, Point, Rect } from "./Engine/Geometry"
+import { Geometry, Point, Rect, Circle, Line } from "./Engine/Geometry"
 import { Color } from "./Engine/middleware/Color"
 import { Vector } from "./Engine/middleware/Vector"
 
@@ -16,27 +16,23 @@ function App() {
       if (!context) return;
 
 
-      const pos = new Position(400,300)
-      const anchor = new Position(400,300)
+      const A = new Position(200,300)
+      const B = new Position(500,200)
 
-      const geo = new Rect(pos, 50, 50, Color.GREEN)
-      const p = new Point(anchor, false)
-      p.position = anchor
-      
-      geo.anchor = anchor
-
-      const offSetX = 5
-      const offsetAngle = 5
-      anchor.x += 50
+      const geo = new Line(A, B, Color.BLUE)
+      const pA = new Point(A, false)
+      const pB = new Point(B, false)
+      const c = new Point(geo.position)
 
       setInterval(()=>{
         context.clearRect(0,0,800,600)
 
-        geo.rotateAngle += offsetAngle
         // anchor.x += offSetX
 
         geo.draw(context)
-        p.draw(context)
+        pA.draw(context)
+        pB.draw(context)
+        c.draw(context)
       }, 50)
 
 

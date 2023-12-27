@@ -120,3 +120,81 @@ export class Point extends Geometry{
     }
     
 }
+
+
+export class Circle extends Geometry{
+    protected _radius: number
+    protected _isFill: boolean
+
+    constructor(
+        position: Position,
+        radius: number,
+        color: Color = Color.RED, isFill = true){
+            super(position, GeometryType.CIRCLE, color)
+            this._radius = radius
+            this._isFill = isFill
+
+    }
+
+    set radius(value: number){
+        this._radius = value
+    }
+
+    get radius():number{
+        return this._radius
+    }
+
+
+    draw(context: CanvasRenderingContext2D): void {
+        context.save()
+        context.translate(this.x, this.y);
+        context.beginPath();
+        context.arc(0, 0, this.radius, 0, Math.PI * 2);
+        context.closePath();
+        if(this._isFill){
+            context.fillStyle = this.color.RGBA;
+            context.fill();
+        }
+        context.strokeStyle = this._strokeColor.RGBA
+        context.stroke()
+        context.restore()
+    }
+    
+}
+
+
+
+export class Line extends Geometry{
+    protected _initial: Position
+    protected _final: Position
+
+    constructor(
+        initial: Position,
+        final: Position,
+        color: Color = Color.RED){
+            super(initial, GeometryType.LINE, color)
+            this._initial = initial
+            this._final = final
+    }
+
+    
+    get initialPosition():Position{
+        return this._initial
+    }
+    get finalPosition():Position{
+        return this._initial
+    }
+
+
+    draw(context: CanvasRenderingContext2D): void {
+        context.save()
+        // context.translate(this.x, this.y);
+        context.beginPath();
+        context.moveTo(this._initial.x, this._initial.y)
+        context.lineTo(this._final.x, this._final.y)
+        context.strokeStyle = this.color.RGBA
+        context.stroke()
+        context.restore()
+    }
+    
+}
