@@ -1,7 +1,9 @@
+import { PolygonEdgesError } from "./Errors";
 import { GeometryType } from "./enums/GeometryType";
 import { Color } from "./middleware/Color";
 import { Movable } from "./middleware/Movable";
 import { Position } from "./middleware/Position";
+import { Vector } from "./middleware/Vector";
 
 export abstract class Geometry extends Movable{
     protected _lineSize: number = 2
@@ -194,12 +196,75 @@ export class Line extends Geometry{
 
     draw(context: CanvasRenderingContext2D): void {
         context.save()
-        // context.translate(this.x, this.y);
+        context.translate(this.anchor.x, this.anchor.y);
+        context.rotate(this._rotateRad);
+        context.translate(-this.anchor.x, -this.anchor.y);
         context.beginPath();
         context.moveTo(this._initial.x, this._initial.y)
         context.lineTo(this._final.x, this._final.y)
         context.strokeStyle = this.color.RGBA
         context.stroke()
+        context.restore()
+    }
+
+}
+
+
+
+export class Polygon extends Geometry{
+    protected _points: Position[]
+    protected _isFill: boolean
+
+    constructor(
+        position: Position,
+        points: Position[],
+        color: Color = Color.BLUE, isFill: boolean = true ){
+            super(position, GeometryType.LINE, color)
+            this._points = points
+            this._isFill = isFill
+    }
+
+
+    get points():Position[]{
+        return this._points
+    }
+    //override
+    translateTo(delta: Vector): void {
+        super.translateTo(delta)
+        this.points.forEach(point=>{
+            point.translateTo(delta)
+        })
+    }
+
+    moveTo(position: Position): void {
+        super.moveTo(position)
+        this.points.forEach(point=>{
+            point.moveTo(position)
+        })
+    }
+
+    draw(context: CanvasRenderingContext2D): void {
+        if(this.points.length <= 2)
+            throw new PolygonEdgesError
+        context.save()
+        context.translate(this.anchor.x, this.anchor.y);
+        context.rotate(this._rotateRad);
+        context.translate(-this.anchor.x, -this.anchor.y);
+        context.beginPath();
+        this.points.forEach((point, i)=>{
+            if(i === 0){
+                context.moveTo(point.x, point.y)
+            }else{
+                context.lineTo(point.x, point.y)
+            }
+        })
+        context.lineTo(this.points[0].x, this.points[0].y)
+        context.strokeStyle = this._strokeColor.RGBA
+        context.stroke()
+        if(this._isFill){
+            context.fillStyle= this.color.RGBA
+            context.fill()
+        }
         context.restore()
     }
 

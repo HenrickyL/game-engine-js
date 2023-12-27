@@ -12,3 +12,10 @@ export class NotImplementError extends ThrowError{
         super("Method not implement")
     }
 }
+
+
+export class PolygonEdgesError extends ThrowError{
+    constructor(){
+        super("The polygon must have at least 3 edges.")
+    }
+}

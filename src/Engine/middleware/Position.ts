@@ -1,3 +1,5 @@
+import { Vector } from "./Vector"
+
 export class Position{
 
     constructor(private _x: number =0, private _y: number =0){}
@@ -34,6 +36,17 @@ export class Position{
 
     copy(): Position{
         return new Position(this.x, this.y)
-    }   
+    }
+    
+    
+    public moveTo(position: Position):void{
+        this.x = position.x
+        this.y = position.y
+    }
+
+    public translateTo(delta: Vector){
+        this.x += delta.x
+        this.y += delta.y
+    }
 
 }
