@@ -82,7 +82,6 @@ export class Engine{
             }else if(!this._isVariableRate && elapsed > this._frameDuration){
                 this._graphics.clear()
                 this._game.draw(this._graphics.context)
-                return
             }
         }
     }

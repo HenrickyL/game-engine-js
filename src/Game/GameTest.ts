@@ -3,24 +3,33 @@ import { Graphics } from "../Engine/Graphics";
 import { IGame } from "../Engine/interfaces/IGame";
 import { Color } from "../Engine/middleware/Color";
 import { Position } from "../Engine/middleware/Position";
+import { Text } from "../Engine/middleware/Text";
 import { Vector } from "../Engine/middleware/Vector";
 
 export class GameTest implements IGame{
     private objs: Geometry[] =[]
+    private texts : Text[] = []
     private _graphics : Graphics  = new Graphics
     init(graphic: Graphics): void {
         this._graphics = graphic
-        const pos = this._graphics?.middleCenter || Position.Default
-        const direction = [ Vector.Up.add(Vector.Right), Vector.Up.add(Vector.Left), Vector.Down.add(Vector.Right), Vector.Down.add(Vector.Left)] 
-        const count = 1500
-        for(let i =0; i< count; i++){
-            const index = randInt(0, direction.length)
-            const color = new Color(randInt(0,255),randInt(0,255), randInt(0,255))
-            const obj = new Circle(pos,randInt(10,25), color)
-            obj.speed = direction[index]
-            obj.speedMag = randInt(1,5)
-            this.objs.push(obj)
-        }
+        // const pos = this._graphics?.middleCenter || Position.Default
+        // const direction = [ Vector.Up.add(Vector.Right), Vector.Up.add(Vector.Left), Vector.Down.add(Vector.Right), Vector.Down.add(Vector.Left)] 
+        // const count = 1500
+        // for(let i =0; i< count; i++){
+        //     const index = randInt(0, direction.length)
+        //     const color = new Color(randInt(0,255),randInt(0,255), randInt(0,255))
+        //     const obj = new Circle(pos,randInt(10,25), color)
+        //     obj.speed = direction[index]
+        //     obj.speedMag = randInt(1,5)
+        //     this.objs.push(obj)
+        // }
+        const text = new Text("Hello World",this._graphics.middleCenter,
+        {
+            color: Color.RED,
+            size: 50
+        })
+        this.texts.push(text)
+
     }
     update(): void {
         this.objs.forEach(obj=>{
@@ -33,12 +42,14 @@ export class GameTest implements IGame{
                 obj.speed.invertY()
             }
 
-
         })
     }
     draw(context: CanvasRenderingContext2D): void {
         this.objs.forEach(obj=>{
             obj.draw(context)
+        })
+        this.texts.forEach(text=>{
+            text.draw(context)
         })
     }
 }

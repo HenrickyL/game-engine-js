@@ -1,11 +1,8 @@
 import { useEffect, useRef } from "react"
-import { Position } from "./Engine/middleware/Position"
 import { Geometry, Point, Rect, Circle, Line, Polygon } from "./Engine/Geometry"
-import { Color } from "./Engine/middleware/Color"
 import { Vector } from "./Engine/middleware/Vector"
 import { Input } from "./Engine/Input"
 import { InputKeys } from "./Engine/enums"
-import { Graphics } from "./Engine/Graphics"
 import { Engine } from "./Engine/Engine"
 import { GameTest } from "./Game/GameTest"
 
