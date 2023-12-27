@@ -49,4 +49,9 @@ export class Position{
         this.y += delta.y
     }
 
+
+    static get Default():Position{
+        return new Position()
+    }
+
 }
