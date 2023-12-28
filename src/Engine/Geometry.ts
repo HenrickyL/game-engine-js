@@ -18,6 +18,9 @@ export abstract class Geometry extends Movable{
     get color():Color{
         return this._color
     }
+    set color(_color: Color){
+        this._color = _color
+    }
 
     get type():GeometryType{
         return this._type
