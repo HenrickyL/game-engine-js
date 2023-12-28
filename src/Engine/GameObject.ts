@@ -31,4 +31,18 @@ export abstract class GameObject extends Movable{
         this.bbox.translateTo(delta)
     }
 
+
+    get left(): number {
+        return this._bbox.left
+    }
+    get right(): number {
+        return this._bbox.right
+    }
+    get top(): number {
+        return this._bbox.top
+    }
+    get bottom(): number {
+        return this._bbox.bottom
+    }
+
 }
