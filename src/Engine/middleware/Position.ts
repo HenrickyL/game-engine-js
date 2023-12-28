@@ -40,6 +40,10 @@ export class Position implements IPosition{
     copy(): Position{
         return new Position(this.x, this.y)
     }
+
+    equal(other:Position):boolean{
+        return this._x === other._x && this._y === other._y
+    }
     
     
     public moveTo(position: Position):void{
