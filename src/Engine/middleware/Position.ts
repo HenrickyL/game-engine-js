@@ -51,6 +51,11 @@ export class Position implements IPosition{
         this.y = position.y
     }
 
+    public moveToPos(position: IPosition):void{
+        this.x = position.x
+        this.y = position.y
+    }
+
     public translateTo(delta: Vector){
         this.x += delta.x
         this.y += delta.y
