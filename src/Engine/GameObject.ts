@@ -3,7 +3,7 @@ import { Movable } from "./middleware/Movable"
 import { Position } from "./middleware/Position";
 import { Vector } from "./middleware/Vector";
 
-export abstract class Object extends Movable{
+export abstract class GameObject extends Movable{
     private _bbox: Geometry //colisao 
     constructor(position: Position, bbox: Geometry){
         super(position)
@@ -15,7 +15,7 @@ export abstract class Object extends Movable{
     }
 
     abstract update(): void
-    abstract onCollision(obj: Object): void
+    abstract onCollision(obj: GameObject): void
 
     draw(context: CanvasRenderingContext2D): void{
         this._bbox.draw(context)
