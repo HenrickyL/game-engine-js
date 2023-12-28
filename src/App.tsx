@@ -5,6 +5,7 @@ import { Input } from "./Engine/Input"
 import { InputKeys } from "./Engine/enums"
 import { Engine } from "./Engine/Engine"
 import { GameTest } from "./Game/GameTest"
+import { Position } from "./Engine/middleware/Position"
 
 
 function App() {
@@ -16,10 +17,20 @@ function App() {
       const canvas = canvasRef.current
       const context: CanvasRenderingContext2D | null  = canvas.getContext('2d')
       if (!context) return;
-      const game = new GameTest()
-      const engine = new Engine(true)
-      engine.frameRate = 120
-      engine.start(game)
+      // const game = new GameTest()
+      // const engine = new Engine(true)
+      // engine.frameRate = 120
+      // engine.start(game)
+
+      Input.generate(canvas)
+      const mouse = new Point(Position.Default)
+      mouse.position = Input.getMouse()
+
+      setInterval(()=>{
+        context.clearRect(0,0,800,600)
+        mouse.draw(context)
+      },50)
+
 
   },[])
 

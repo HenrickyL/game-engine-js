@@ -30,7 +30,7 @@ export class Engine{
     start(game: IGame){
         this._graphics = new Graphics(this.screenWidth, this.screenHeight)
         this._game = game
-        Input.generate()
+        Input.generate(this._graphics.canvas)
         this.loop()
     }
 
@@ -75,7 +75,6 @@ export class Engine{
         this.verifyPause()
         if(this._game && this._graphics && this._graphics.context && !this._onPause){
             this._game.update()
-            console.log(this.frameRate)
             if(this._isVariableRate){
                 this._graphics.clear()
                 this._game.draw(this._graphics.context)

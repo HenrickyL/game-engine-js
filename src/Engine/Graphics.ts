@@ -1,8 +1,9 @@
+import { CanvasContextError, CanvasHTMLElementNotFoundError } from "./Errors"
 import { Position } from "./middleware/Position"
 
 export class Graphics{
-    private _canvas: HTMLCanvasElement| null
-    private _context: CanvasRenderingContext2D | null | undefined
+    private _canvas: HTMLCanvasElement
+    private _context: CanvasRenderingContext2D
     private _width: number 
     private _height: number
 
@@ -20,17 +21,27 @@ export class Graphics{
     constructor(width: number = 800, height: number =600){
         this._width = width
         this._height = height
-        this._canvas = document.querySelector("canvas")
-        this._context = this._canvas?.getContext('2d')
-        this.resize()
+        const canvas = document.querySelector("canvas")
+        if(canvas){
+            this._canvas = canvas
+            const context = this._canvas.getContext('2d')
+            if(context){
+                this._context = context
+            }else{
+                throw new CanvasContextError()
+            }
+            this.resize()
+        }else{
+            throw new CanvasHTMLElementNotFoundError()
+        }
         
     }
 
-    get canvas():HTMLCanvasElement | null {
+    get canvas():HTMLCanvasElement {
         return this._canvas
     }
-    get context():CanvasRenderingContext2D | null{
-        return this._context || null
+    get context():CanvasRenderingContext2D{
+        return this._context
     }
     
     get width(): number{

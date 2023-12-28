@@ -31,3 +31,18 @@ export class GeometryParamInvalidError extends ThrowError{
         super("this Geometry Param is invalid.")
     }
 }
+
+
+
+export class CanvasHTMLElementNotFoundError extends ThrowError{
+    constructor(){
+        super("Canvas tag not found.")
+    }
+}
+
+
+export class CanvasContextError extends ThrowError{
+    constructor(){
+        super("Context Canvas not working.")
+    }
+}
