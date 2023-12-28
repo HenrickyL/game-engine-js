@@ -1,4 +1,4 @@
-import { PolygonEdgesError } from "./Errors";
+import { GeometryParamInvalidError, PolygonEdgesError } from "./Errors";
 import { GeometryType } from "./enums/GeometryType";
 import { Color } from "./middleware/Color";
 import { Movable } from "./middleware/Movable";
@@ -38,14 +38,23 @@ export abstract class Geometry extends Movable{
 
     abstract draw(context: CanvasRenderingContext2D): void
 
-    // abstract get left(): number
-    // abstract get right(): number
-    // abstract get top(): number
-    // abstract get bottom(): number
+    get left(): number{
+        throw new GeometryParamInvalidError()
+    }
+    get right(): number{
+        throw new GeometryParamInvalidError()
+    }
+    get top(): number{
+        throw new GeometryParamInvalidError()
+    }
+    get bottom(): number{
+        throw new GeometryParamInvalidError()
+    }
 }
 
 
 export class Rect extends Geometry{
+    
     constructor(position: Position,
         protected _width: number,
         protected _height: number,
@@ -76,6 +85,19 @@ export class Rect extends Geometry{
         context.strokeRect(this.x- halfWidth, this.y -halfHeight, this.width, this.height);
 
         context.restore()
+    }
+
+    get left(): number {
+        return this.x - this.width/2
+    }
+    get right(): number {
+        return this.x + this.width/2
+    }
+    get top(): number {
+        return this.y - this.height/2
+    }
+    get bottom(): number {
+        return this.y + this.height/2
     }
 
 }
@@ -124,6 +146,7 @@ export class Point extends Geometry{
 
 
 export class Circle extends Geometry{
+    
     protected _radius: number
     protected _isFill: boolean
 
@@ -160,6 +183,19 @@ export class Circle extends Geometry{
         context.strokeStyle = this._strokeColor.RGBA
         context.stroke()
         context.restore()
+    }
+
+    get left(): number {
+        return this.x - this.radius
+    }
+    get right(): number {
+        return this.x + this.radius
+    }
+    get top(): number {
+        return this.y - this.radius
+    }
+    get bottom(): number {
+        return this.y + this.radius
     }
 
 }

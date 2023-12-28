@@ -25,3 +25,9 @@ export class GameNotDefinedInEngineError extends ThrowError{
         super("No game provided. Please provide a valid game object to Engine.")
     }
 }
+
+export class GeometryParamInvalidError extends ThrowError{
+    constructor(){
+        super("this Geometry Param is invalid.")
+    }
+}
