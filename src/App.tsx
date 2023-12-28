@@ -35,7 +35,7 @@ function App() {
         ref={canvasRef}
         width={800}
         height={600}
-        style={{border: "1px solid black"}}
+        style={{border: "1px solid black", backgroundColor: "white"}}
       />
     </>
   )

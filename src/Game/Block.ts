@@ -25,6 +25,7 @@ export class Block extends GameObject{
     onCollision(obj: GameObject): void {
         if(obj instanceof Ball){
             this._onCollide = true
+            this.bbox.color.alpha = 0.2
         }
     }
 

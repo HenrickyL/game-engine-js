@@ -20,6 +20,9 @@ export class Color{
     get alpha():number{
         return this._a
     }
+    set alpha(value: number){
+        this._a = value
+    }
 
     get RGBA(): string{
         return `rgba(${this.r},${this.g},${this.b},${this.alpha})`;

@@ -36,17 +36,8 @@ export class Ball extends GameObject{
     }
 
     update(): void {
-        if(this._start ){
-
-            if(this._reset){
-                if( this.timer.getElapsedMiliSeconds() > this.elapsed){
-                    this._reset = false
-                    this._start = false
-                    this.start()
-                }else{
-                    return
-                }
-            }
+        if(this._start && !this._reset){
+            
             this.translateTo(this.speedFinal)
 
             if(this.left <0 || this.right > 800){
@@ -58,13 +49,20 @@ export class Ball extends GameObject{
             this.timer.resetTimer()
         }else{
             this.translateTo( new Vector(-this.x + this._player.x, 0))
+            if(this._reset){
+                if( this.timer.getElapsedMiliSeconds() > this.elapsed){
+                    this._reset = false
+                }
+            }
         }
     }
     onCollision(obj: GameObject): void {
        if(obj instanceof Player){
-        this.speed.invertY()
+        this.speed.invertY(randFloat(0.9, 1.1))
        }else if(obj instanceof Block){
         this._reset = true
+        this._start = false
+        this.start()
        }
     }
 
