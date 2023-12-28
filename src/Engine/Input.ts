@@ -112,11 +112,11 @@ export class Input{
 
 
     static generate(canvas: HTMLCanvasElement): void{
-        this._canvas = canvas
-        const rect = this._canvas.getBoundingClientRect()
-        Input._offsetX= rect.left 
-        Input._offsetY= rect.top
         if(Input._instance == null){
+            Input._canvas = canvas
+            const rect = Input._canvas.getBoundingClientRect()
+            Input._offsetX= rect.left 
+            Input._offsetY= rect.top
             Input._instance = new Input()
         }
     }

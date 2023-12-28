@@ -3,6 +3,19 @@ import { Engine } from "./Engine/Engine"
 import { GameTest } from "./Game/GameTest"
 
 
+let start = false
+
+
+const EngineStart= ()=>{
+  if(!start){
+    start = true
+    const game = new GameTest()
+    const engine = new Engine(true)
+    engine.start(game)
+  }
+}
+
+
 function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
@@ -12,11 +25,7 @@ function App() {
       // const canvas = canvasRef.current
       // const context: CanvasRenderingContext2D | null  = canvas.getContext('2d')
       // if (!context) return;
-      const game = new GameTest()
-      const engine = new Engine(true)
-      engine.frameRate = 120
-      engine.start(game)
-
+      EngineStart()
   },[])
 
 
