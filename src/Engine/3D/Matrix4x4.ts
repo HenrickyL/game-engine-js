@@ -16,4 +16,8 @@ export class Matrix4x4{
     set(i:number, j:number, value: number):void{
         this._matrix[i][j] = value
     }
+
+    get matrix(): Array<Array<number>>{
+        return this._matrix
+    }
 }

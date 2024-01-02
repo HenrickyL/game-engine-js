@@ -1,3 +1,4 @@
+import { Vector3d } from "./3D/Vector3d";
 import { GeometryParamInvalidError, PolygonEdgesError } from "./Errors";
 import { GeometryType } from "./enums/GeometryType";
 import { Color } from "./middleware/Color";
@@ -106,7 +107,11 @@ export class Rect extends Geometry{
 }
 
 
-
+type DrawPointSettings = {
+    size?: number
+    color?: Color
+    isSquare?: boolean
+}
 export class Point extends Geometry{
     protected _size: number = 5
     protected _isSquare = true;
@@ -126,7 +131,24 @@ export class Point extends Geometry{
     get size():number{
         return this._size
     }
-
+    static draw(context: CanvasRenderingContext2D, points: Vector3d[] = [],settings: DrawPointSettings = {}){
+        const size = settings.size || 3
+        points.forEach(point=>{
+            context.save();
+            context.translate(point.x, point.y);
+            
+            if (settings.isSquare) {
+                context.fillRect(-size/2, -size/2, size, size);
+            } else {
+                context.beginPath();
+                context.arc(0, 0, size/2, 0, Math.PI * 2);
+                context.fillStyle = settings.color?.RGBA || Color.BLUE.RGBA;
+                context.fill();
+                context.closePath();
+            }
+            context.restore()
+        })
+    }
 
     draw(context: CanvasRenderingContext2D): void {
         context.save()
@@ -241,7 +263,10 @@ export class Line extends Geometry{
 
 }
 
-
+type PolygonDrawSettings = {
+    fillColor?: Color
+    strokeColor?: Color
+}
 
 export class Polygon extends Geometry{
     protected _points: Position[]
@@ -295,6 +320,31 @@ export class Polygon extends Geometry{
             context.fillStyle= this.color.RGBA
             context.fill()
         }
+        context.restore()
+    }
+
+
+    static draw(context: CanvasRenderingContext2D, points: Vector3d[], settings: PolygonDrawSettings = {}){
+        if(points.length<3)return
+        context.save()
+
+        context.beginPath();
+        points.forEach((point, i)=>{
+            if(i == 0){
+                context.moveTo(point.x,point.y)
+            }else{
+                context.lineTo(point.x,point.y)
+            }
+        })
+        context.lineTo(points[0].x,points[0].y)
+        // context.lineWidth = 1
+        context.strokeStyle = settings.strokeColor?.RGBA || Color.BLACK.RGBA;
+        context.stroke()
+        if(settings.fillColor){
+            context.fillStyle = settings.fillColor.RGBA;
+            context.fill()
+        }
+        context.closePath();
         context.restore()
     }
 
