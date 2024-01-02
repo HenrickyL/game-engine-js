@@ -1,9 +1,6 @@
 import { Vector } from "./Vector"
-export interface IPosition{
-    x: number
-    y: number
-}
-export class Position implements IPosition{
+
+export class Position{
 
     constructor(private _x: number =0, private _y: number =0){}
 
