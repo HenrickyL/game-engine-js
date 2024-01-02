@@ -1,5 +1,6 @@
 import { GameObject } from "../Engine/GameObject";
 import { Rect } from "../Engine/Geometry";
+import { Scene } from "../Engine/Scene";
 import { randFloat, randInt } from "../Engine/middleware";
 import { Color } from "../Engine/middleware/Color";
 import { Position } from "../Engine/middleware/Position";
@@ -8,17 +9,23 @@ import { Ball } from "./Ball";
 
 export class Block extends GameObject{
     private _onCollide: boolean = false
-    constructor(position: Position) {
+    private _callback: (current: Block)=>void
+    constructor(position: Position, callback: (current: Block)=>void) {
         super(position, new Rect(position, 40,40))
         this.bbox.color = new Color(randInt(0,255), randInt(0,255), randInt(0,255))
         const direction = randInt(-3,3) >0 ? Vector.Right : Vector.Left
         this.speed = Vector.Down.add(direction.prod(randFloat(-0.5,1.2)))
         this.speedMag = 12
+        this._callback = callback
     }
 
     update(): void {
         if(this._onCollide){
             this.translateTo(this.speedFinal)
+
+            if(this.y > 600){
+                this._callback(this)
+            }
         }
     }
 

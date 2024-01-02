@@ -9,7 +9,7 @@ import { Block } from "./Block";
 import { Player } from "./Player";
 
 export class GameTest implements IGame{
-    private _graphics : Graphics  = new Graphics
+    private _graphics : Graphics  = new Graphics()
     private _scene: Scene
     private _ball: Ball  = new Ball()
 
@@ -38,14 +38,16 @@ export class GameTest implements IGame{
             posX = width/qtdX + 50
             for(let j=0; j< qtdX; j++){
                 let pos = new Position(posX, posY)
-                const block = new Block(pos)
+                const block = new Block(pos,this.removeBlock)
                 this._scene.add(block, ObjectGroup.STATIC)
                 posX += offsetX
             }
             posY += offsetY
         }
-        
+    }
 
+    private removeBlock =  (block: Block):void=>{
+        this._scene.remove(block, ObjectGroup.STATIC)
     }
     update(): void {
         if(Input.keyPress(InputKeys.Space)){
