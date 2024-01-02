@@ -17,9 +17,13 @@ ZNear
 x,y,z =>  aFx/z, Fy/z, (zq - znear q)/z
 
 */
-
+type UpdateSettings = {
+    angleX: number, 
+    angleZ: number, 
+    angleY: number
+}
 type RenderSettings = {
-    isColor?: Color
+    isColor?: boolean
     isPoint?: boolean
 
 }
@@ -36,8 +40,14 @@ export class Render3d{
     private _FovRad: number = 0
 
     private _matrixProjection: Matrix4x4 = new Matrix4x4()
+    private _matRotX: Matrix4x4 = new Matrix4x4()
+    private _matRotZ: Matrix4x4 = new Matrix4x4()
+    private _matRotY: Matrix4x4 = new Matrix4x4()
 
     //test
+    private _angleXRad: number = 0
+    private _angleZRad: number = 0
+    private _angleYRad: number = 0
     private _zDistance:number = 2
 
 
@@ -47,7 +57,15 @@ export class Render3d{
     }
 
     
+    update(settings:UpdateSettings = {angleX:0, angleZ:0, angleY:0}){
+        this._angleXRad = settings.angleX 
+        this._angleZRad = settings.angleZ 
+        this._angleYRad = settings.angleY 
 
+        this.calculatedMatrixRotateX()
+        this.calculatedMatrixRotateZ()
+        this.calculatedMatrixRotateY()
+    }
     
 
     render(mesh: Mesh, settings: RenderSettings = {}){
@@ -60,7 +78,7 @@ export class Render3d{
             if(settings.isPoint)
                 Point.draw(this._graphics.context, projectedVertices,{isSquare: false, size: 5})
             else
-                Polygon.draw(this._graphics.context, projectedVertices, {fillColor: settings.isColor})
+                Polygon.draw(this._graphics.context, projectedVertices, settings.isColor? {fillColor: Color.GREEN}: {})
         })
     }
 
@@ -93,9 +111,57 @@ export class Render3d{
         this._matrixProjection.set(3,3, 0)
     }
 
-    private projectVertex(vertex: Vector3d){
-        const v = vertex
+    private calculatedMatrixRotateZ(){
+        this._matRotZ = new Matrix4x4() 
 
+        const angle = this._angleZRad
+        const sin = Math.sin(angle)
+        const cos = Math.cos(angle)
+        
+        this._matRotZ.set(0,0, cos)
+        this._matRotZ.set(0,1, sin)
+        this._matRotZ.set(1,0, -sin)
+        this._matRotZ.set(1,1, cos)
+        this._matRotZ.set(2,2, 1)
+        this._matRotZ.set(3,3, 1)
+
+    }
+    private calculatedMatrixRotateY(){
+        this._matRotY = new Matrix4x4() 
+
+        const angle = this._angleYRad
+        const sin = Math.sin(angle)
+        const cos = Math.cos(angle)
+        
+        this._matRotY.set(0,0, cos)
+        this._matRotY.set(0,1, 0)
+        this._matRotY.set(0,2, sin)
+        this._matRotY.set(1,1, 1)
+        this._matRotY.set(2,0, -sin)
+        this._matRotY.set(2,2, cos)
+    }
+
+    private calculatedMatrixRotateX(){
+        this._matRotX = new Matrix4x4() 
+
+        const angle = this._angleXRad
+        const sin = Math.sin(angle * 0.5)
+        const cos = Math.cos(angle * 0.5)
+        
+        this._matRotX.set(0,0, 1)
+        this._matRotX.set(1,1, cos)
+        this._matRotX.set(1,2, sin)
+        this._matRotX.set(2,1, -sin)
+        this._matRotX.set(2,2, cos)
+        this._matRotX.set(3,3, 1)
+        
+    }
+
+    private projectVertex(vertex: Vector3d){
+        // const v = vertex
+        const vY = this.multiplyMatrixVector(vertex, this._matRotY)
+        const vZ = this.multiplyMatrixVector(vY, this._matRotZ)
+        const v = this.multiplyMatrixVector(vZ, this._matRotX)
 
         const translatedVertex = {
             x: v.x,
@@ -132,5 +198,17 @@ export class Render3d{
     set theta(value:number){
         this._theta = value/180*Math.PI
         this.setProjectionParams(this._width, this._height, this._theta, this._zFar, this._zNear)
+    }
+
+    get width(){
+        return this._width
+    }
+
+    get height(){
+        return this._height
+    }
+
+    set z(value:number){
+        this._zDistance = value
     }
 }
