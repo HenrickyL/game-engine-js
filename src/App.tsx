@@ -9,9 +9,9 @@ let start = false
 const EngineStart= ()=>{
   if(!start){
     start = true
-    const game = new GameTest()
-    const engine = new Engine(true)
-    engine.start(game)
+    // const game = new GameTest()
+    // const engine = new Engine(true)
+    // engine.start(game)
   }
 }
 

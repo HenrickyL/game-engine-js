@@ -1,4 +1,6 @@
+import { Point, Polygon } from "../Geometry"
 import { Graphics } from "../Graphics"
+import { Color } from "../middleware/Color"
 import { Matrix4x4 } from "./Matrix4x4"
 import { Mesh } from "./Mesh"
 import { Vector3d } from "./Vector3d"
@@ -17,6 +19,8 @@ x,y,z =>  aFx/z, Fy/z, (zq - znear q)/z
 */
 
 type RenderSettings = {
+    isColor?: Color
+    isPoint?: boolean
 
 }
 export class Render3d{
@@ -53,6 +57,10 @@ export class Render3d{
             const vertices = triangle.vertices;
 
             const projectedVertices = vertices.map(vertex=>this.projectVertex(vertex))
+            if(settings.isPoint)
+                Point.draw(this._graphics.context, projectedVertices,{isSquare: false, size: 5})
+            else
+                Polygon.draw(this._graphics.context, projectedVertices, {fillColor: settings.isColor})
         })
     }
 
