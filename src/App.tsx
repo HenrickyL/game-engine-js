@@ -13,6 +13,7 @@ let start = false
 
 
 const EngineStart= async()=>{
+
   if(!start){
     start = true
     // const game = new GameTest()
@@ -21,9 +22,10 @@ const EngineStart= async()=>{
     const graphics = new Graphics()
     const test = new Test3d()
     const graph = new Render3d(graphics)
-    // const obj = await test.getObj('./public/tree.obj')
+    const obj = await test.getObj('src\\public\\tree.obj')
+
     const forms = [
-        // obj,
+        obj,
         test.getCube(),
         test.getHexagonalPrism(),
         test.getPyramid(),
@@ -32,8 +34,6 @@ const EngineStart= async()=>{
 
     let index = 0
     let mesh = forms[index]
-    console.log("start")
-
     Input.generate(graphics.canvas)
     let angleX = 0
     let angleZ = 0
@@ -55,7 +55,7 @@ const EngineStart= async()=>{
             isPoint = !isPoint
         }
 
-        if(Input.keyPress(InputKeys.Backspace)){
+        if(Input.keyPress(InputKeys.Space)){
             index = (index + 1) % forms.length
             mesh = forms[index]
         }
@@ -90,9 +90,9 @@ const EngineStart= async()=>{
         graph.update({angleX, angleZ, angleY})
         graph.render(mesh, {isPoint, isColor})
     }, 1000/45)
-    
   }
 }
+
 
 
 function App() {
@@ -104,7 +104,15 @@ function App() {
       // const canvas = canvasRef.current
       // const context: CanvasRenderingContext2D | null  = canvas.getContext('2d')
       // if (!context) return;
-      EngineStart()
+
+      const asyncFunc = async()=>{
+        try {
+          await EngineStart()
+        } catch (error) {
+          console.error(error)
+        }
+      }
+      asyncFunc()
   },[])
 
 

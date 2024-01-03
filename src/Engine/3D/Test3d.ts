@@ -2,44 +2,60 @@ import { Mesh } from "./Mesh";
 import { Triangle } from "./Triangle";
 import {Vector3d} from './Vector3d'
 import * as THREE from 'three';
+import {OBJLoader} from 'three/examples/jsm/loaders/OBJLoader.js';
+
+
 export class Test3d {
     constructor() {}
 
     async getObj(path: string): Promise<Mesh> {
-        return new Promise<Mesh>((resolve, reject) => {
-            const loader = new THREE.ObjectLoader();
-            loader.load(
-                path,
-                function (object) {
-                    if (object instanceof THREE.Mesh) {
-                        const geometry = object.geometry as THREE.BufferGeometry;
-                        const triangles: Triangle[] = [];
-                        
-                        if (geometry) {
-                            const positions = geometry.attributes.position.array;
-            
-                            for (let i = 0; i < positions.length; i += 9) {
-                                const p1: Vector3d = {x: positions[i], y: positions[i + 1], z: positions[i + 2]}
-                                const p2: Vector3d = {x: positions[i + 3], y: positions[i + 4], z: positions[i + 5]}
-                                const p3: Vector3d = {x: positions[i + 6], y: positions[i + 7], z: positions[i + 8]}
-            
-                                triangles.push({vertices: [p1, p2, p3]});
-                            }
-            
-                            // Agora você tem um array de Triangles (triângulos) com base nos dados do modelo carregado
-                            // Faça o que precisar com esse array de triângulos aqui
-                        }
-                    }
-                },
-                function (xhr) {
-                    // Função de progresso, se necessário
-                },
-                function (error) {
-                    reject(error);
-                }
-            );
+        try {
+            const loader = new OBJLoader();
+            const object = await new Promise((resolve, reject) => {
+                loader.load(
+                    path,
+                    resolve,
+                    function (xhr) {
+                        console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+                    },
+                    reject
+                );
+            }) as THREE.Group;
+            let loadedMesh: THREE.Mesh | undefined;
+
+        // Encontra um mesh entre as crianças do objeto carregado
+        object.traverse((child) => {
+            if (child instanceof THREE.Mesh) {
+                loadedMesh = child;
+            }
         });
+
+        if (!loadedMesh) {
+            throw new Error('Nenhuma geometria de mesh encontrada no objeto carregado.');
+        }
+
+        const geometry = loadedMesh.geometry as THREE.BufferGeometry;
+            const triangles: Triangle[] = [];
+            if (geometry) {
+                const positions = geometry.attributes.position.array;
+
+                for (let i = 0; i < positions.length; i += 9) {
+                    const p1: Vector3d = { x: positions[i], y: positions[i + 1], z: positions[i + 2] };
+                    const p2: Vector3d = { x: positions[i + 3], y: positions[i + 4], z: positions[i + 5] };
+                    const p3: Vector3d = { x: positions[i + 6], y: positions[i + 7], z: positions[i + 8] };
+
+                    triangles.push({ vertices: [p1, p2, p3] });
+                }
+                const mesh: Mesh = { triangles };
+                return mesh;
+            }
+            throw new Error('Object is not an instance of THREE.Mesh');
+        } catch (error) {
+            console.error('Error loading object:', error);
+            throw error;
+        }
     }
+    
 
     
 
