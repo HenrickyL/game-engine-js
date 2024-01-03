@@ -38,6 +38,8 @@ const EngineStart= async()=>{
     let angleX = 0
     let angleZ = 0
     let angleY = 0
+    let theta = 90
+
 
     let isColor = false
     let isPoint = false
