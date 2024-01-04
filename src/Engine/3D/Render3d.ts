@@ -31,6 +31,7 @@ type RenderSettings = {
 }
 export class Render3d{
     private _graphics: Graphics
+    private _onWireframe : boolean = false
 
     private _width: number = 0
     private _height: number = 0
@@ -169,6 +170,7 @@ export class Render3d{
     }
 
     private onSeeTriangle(triangle: Triangle): boolean{
+        if(this._onWireframe) return true;
         const normal = Vector3DMiddleware.normalTriangle(triangle)
 
         const v = triangle.vertices
