@@ -7,7 +7,8 @@ import { Graphics } from "./Engine/Graphics"
 import { InputKeys } from "./Engine/enums"
 import { Input } from "./Engine/Input"
 import { Color } from "./Engine/middleware/Color"
-import { Point } from "./Engine/Geometry"
+import { Point, Polygon } from "./Engine/Geometry"
+import { Vector3d } from "./Engine/3D/Vector3d"
 
 
 let start = false
@@ -26,17 +27,15 @@ const EngineStart= async()=>{
     const tree = await test.getObj('src\\public\\tree.obj')
     const sphere = await test.getObj('src\\public\\sphere.obj')
     const object = await test.getObj('src\\public\\Jeep.obj')
-    const car = await test.getObj('src\\public\\car.obj')
 
 
     const forms = [
-      test.getCube(),
+      test.getCube2(),
       test.getHexagonalPrism(),
       test.getPyramid(),
       tree,
       sphere,
       object,
-      car
     ]
 
     let index = 0
@@ -105,12 +104,23 @@ const EngineStart= async()=>{
 const testInput = ()=>{
   const graphics = new Graphics()
   Input.generate(graphics.canvas)
-  const p = Input.getMouse()
+
   if(!start){
     start = true
-    setInterval(()=>{
-      console.log(Input.onDrag(), Input.dragX, Input.dragY)
-    },100)
+    const a1:Vector3d = {x:10,y:100,z:100}
+    const a2:Vector3d = {x:70,y:40,z:0}
+    const a3:Vector3d = {x:20,y:200,z:0}
+
+    const b1:Vector3d = {x:40,y:50,z:0}
+    const b2:Vector3d = {x:70,y:40,z:40}
+    const b3:Vector3d = {x:20,y:200,z:0}
+
+    const color = new Color(0, 255, 0)
+
+    Polygon.draw(graphics.context,[a1, a2,a3],{fillColor:Color.RED})
+    Polygon.draw(graphics.context,[b1, b2,b3],{fillColor: color})
+
+    Point.draw(graphics.context,[a1,a2,a3],{color: Color.BLACK, size:5})
   }
 }
 

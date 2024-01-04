@@ -59,8 +59,6 @@ export class Test3d {
     }
     
 
-    
-
     getCube(): Mesh {
         const p000: Vector3d = { x: 0, y: 0, z: 0 };
         const p100: Vector3d = { x: 1, y: 0, z: 0 };

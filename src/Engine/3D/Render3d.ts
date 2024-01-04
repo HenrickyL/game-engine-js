@@ -37,7 +37,7 @@ export class Render3d{
     private _width: number = 0
     private _height: number = 0
     private _zFar: number = 1000
-    private _zNear: number = 0.
+    private _zNear: number = 0.1
     private _theta: number = 90 //angle vision - scale factor
 
     private _lastTheta: number = 90
@@ -87,15 +87,27 @@ export class Render3d{
 
     render(mesh: Mesh, settings: RenderSettings = {}){
         this._graphics.clear()
-
+        const trianglesToDraw: Triangle[] = []
         mesh.triangles.forEach(triangle =>{
             const projectedTriangle = this.projectVertex(triangle)
             if(projectedTriangle){
-                if(settings.isPoint)
-                    Point.draw(this._graphics.context, projectedTriangle.vertices,{color: projectedTriangle.color, isSquare: false, size: 5})
-                else
-                    Polygon.draw(this._graphics.context, projectedTriangle.vertices, {fillColor: projectedTriangle.color})
+                trianglesToDraw.push(projectedTriangle)
             }
+        })
+
+        const sortedTriangles = trianglesToDraw.sort((t1, t2) => {
+            // Encontre o valor z mínimo (mais próximo da câmera)
+            const z1 = Math.min(t1.vertices[0].z, t1.vertices[1].z, t1.vertices[2].z);
+            const z2 = Math.min(t2.vertices[0].z, t2.vertices[1].z, t2.vertices[2].z);
+            return z2 - z1;
+          });
+
+
+        sortedTriangles.forEach(triangle=>{
+            if(settings.isPoint)
+                Point.draw(this._graphics.context, triangle.vertices,{color: triangle.color, isSquare: false, size: 5})
+            else
+                Polygon.draw(this._graphics.context, triangle.vertices, {fillColor: triangle.color})
         })
     }
 
@@ -119,13 +131,13 @@ export class Render3d{
         const f = this._FovRad
         const af = a *f 
         const q = this._zFar/(this._zFar - this._zNear)
+        const zNearQ = (-this._zFar * this._zNear)/(this._zFar - this._zNear)
 
         this._matrixProjection.set(0,0, af)
         this._matrixProjection.set(1,1, f)
         this._matrixProjection.set(2,2, q)
-        this._matrixProjection.set(3,2, -q*this._zNear)
+        this._matrixProjection.set(3,2, zNearQ)
         this._matrixProjection.set(2,3, 1)
-        this._matrixProjection.set(3,3, 0)
     }
 
     private calculatedMatrixRotateZ(){
@@ -180,8 +192,8 @@ export class Render3d{
         //same plane, so i can take any point
         const adjust:Vector3d = {
             x: (v[0].x - this._camera.x),
-            y: (v[0].y - this._camera.x),
-            z: (v[0].z - this._camera.x)
+            y: (v[0].y - this._camera.y),
+            z: (v[0].z - this._camera.z)
         } 
         return Vector3DMiddleware.dotProduct(normal,adjust) < 0
     }
@@ -195,6 +207,7 @@ export class Render3d{
             const result: Vector3d[] = triangleTranslated.vertices
             .map(vertex=>{
                 const res = this.multiplyMatrixVector(vertex, this._matrixProjection)
+
                 res.x += 1
                 res.y += 1
         
@@ -216,22 +229,6 @@ export class Render3d{
         return triangle
     }
 
-    // private preProjectionCalculation(triangle: Triangle): Triangle{
-    //     triangle.vertices = triangle.vertices.map(vertex=>{
-    //         const vY = this.multiplyMatrixVector(vertex, this._matRotY)
-    //         const vZ = this.multiplyMatrixVector(vY, this._matRotZ)
-    //         const v = this.multiplyMatrixVector(vZ, this._matRotX)
-    
-    //         const translatedVertex: Vector3d = {
-    //             x: v.x,
-    //             y: v.y,
-    //             z: v.z+ this._zDistance
-    //         }
-    //         return translatedVertex
-    //     })
-    //     return triangle
-    // }
-
     private preProjectionCalculation(triangle: Triangle): Triangle{
         const vertices = triangle.vertices
         const result: Triangle = TriangleMiddleware.generate([], triangle.color)
@@ -240,7 +237,7 @@ export class Render3d{
             const vY = this.multiplyMatrixVector(vertex, this._matRotY)
             const vZ = this.multiplyMatrixVector(vY, this._matRotZ)
             const v = this.multiplyMatrixVector(vZ, this._matRotX)
-    
+            // const v = vertex
             const translatedVertex = {
                 x: v.x,
                 y: v.y,
