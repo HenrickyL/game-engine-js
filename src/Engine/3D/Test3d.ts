@@ -37,9 +37,9 @@ export class Test3d {
                 if (geometry) {
                     const positions = geometry.attributes.position.array;
                     console.log(positions.length/3)
-                    // if(positions.length/3 > 150000){
-                    //     throw new ObjLoaderPerformanceError()
-                    // }
+                    if(positions.length/3 > 150000){
+                        throw new ObjLoaderPerformanceError()
+                    }
                     for (let i = 0; i < positions.length; i += 9) {
                         const p1: Vector3d = { x: positions[i], y: positions[i + 1], z: positions[i + 2] };
                         const p2: Vector3d = { x: positions[i + 3], y: positions[i + 4], z: positions[i + 5] };
