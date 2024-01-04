@@ -5,6 +5,8 @@ export class Color {
     private static _green: Color;
     private static _yellow: Color;
     private static _white: Color;
+    private static _transparent: Color;
+
 
     private constructor(
         private _r: number,
@@ -12,6 +14,17 @@ export class Color {
         private _b: number,
         private _a: number = 1
     ) {}
+    //
+
+    modifyColor(luminosity: number): Color {
+        const modifiedR = Math.round(this._r * luminosity);
+        const modifiedG = Math.round(this._g * luminosity);
+        const modifiedB = Math.round(this._b * luminosity);
+
+        return new Color(modifiedR, modifiedG, modifiedB, this._a);
+    }
+
+    //
 
     get r(): number {
         return this._r;
@@ -77,5 +90,12 @@ export class Color {
             Color._white = new Color(255, 255, 255);
         }
         return Color._white;
+    }
+
+    static get TRANSPARENT(): Color {
+        if (!Color._transparent) {
+            Color._transparent = new Color(255, 255, 255, 0);
+        }
+        return Color._transparent;
     }
 }

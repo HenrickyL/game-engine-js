@@ -8,7 +8,11 @@ export interface Vector3d{
 
 
 export abstract class Vector3DMiddleware{
-
+    static generate(x: number=0, y: number=0, z: number=0):Vector3d{
+        return {
+            x,y,z
+        }
+    }
     static crossProduct(A: Vector3d, B: Vector3d): Vector3d{
         return {
             x: A.y*B.z - A.z*B.y,

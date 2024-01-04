@@ -60,6 +60,14 @@ export class Vector{
         return new Vector(-this._x, -this._y, -this.z)
     }
 
+    unitary():Vector{
+        const mag = this.magnitude()
+        return new Vector(this.x/mag, this.y/mag, this.z/mag)
+    }
+    magnitude():number{
+        return Math.sqrt(this.x*this.x + this.y*this.y + this.z*this.z)
+    }
+
     // Atributos estáticos
     static get Right(): Vector {
         return new Vector(1, 0, 0);
