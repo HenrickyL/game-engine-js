@@ -10,7 +10,7 @@ export class Color {
     private static _transparent: Color;
 
 
-    private constructor(
+    constructor(
         private _r: number,
         private _g: number,
         private _b: number,
