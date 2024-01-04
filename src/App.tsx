@@ -46,50 +46,60 @@ const EngineStart= async()=>{
     let z = 1
     let tick = 0.2
     setInterval(()=>{
-        if(Input.keyDown(InputKeys.ArrowLeft)){
-            angleX += 1
-        }else if(Input.keyDown(InputKeys.ArrowRight)) {
-            angleX -= 1
-        }
-        if(Input.keyPress(InputKeys.A)){
-            isPoint = !isPoint
-        }
+        
+      if(Input.keyPress(InputKeys.A)){
+        isPoint = !isPoint
+      }
 
-        if(Input.keyPress(InputKeys.Space)){
-            index = (index + 1) % forms.length
-            mesh = forms[index]
-        }
+      if(Input.keyPress(InputKeys.Space)){
+        index = (index + 1) % forms.length
+        mesh = forms[index]
+      }
 
-        if(Input.keyDown(InputKeys.W)){
-            z+=tick
-           graph.z = z
-        }
+      if(Input.keyDown(InputKeys.W)){
+        z+=tick
+        graph.z = z
+      }
 
-        if(Input.keyDown(InputKeys.S)){
-            z-=tick
-           graph.z = z
-        }
+      if(Input.keyDown(InputKeys.S)){
+        z-=tick
+        graph.z = z
+      }
 
 
-        if(Input.keyPress(InputKeys.D)){
-            isColor = !isColor
-        }
+      if(Input.keyPress(InputKeys.D)){
+        isColor = !isColor
+      }
 
-        if(Input.keyDown(InputKeys.ArrowDown)){
-            angleZ += 1
-        }else if(Input.keyDown(InputKeys.ArrowUp)) {
-            angleZ -= 1
-        }
+      if(Input.onDragY()){
+        angleX = Input.dragY/ 100
+      }
+      if(Input.onDragX()){
+        angleY = Input.dragX/ 100
+      }
 
-        if(Input.getMouseWheel() != 0){
-            const value = Input.getMouseWheel()
-            angleY = value*0.7
-        }
+      if(Input.getMouseWheel() != 0){
+        const value = Input.getMouseWheel()
+        angleZ = value*0.5
+      }
     }, 100)
     setInterval(()=>{
         graph.update({angleX, angleZ, angleY})
         graph.render(mesh, {isPoint, isColor})
     }, 1000/45)
+  }
+}
+
+
+const testInput = ()=>{
+  const graphics = new Graphics()
+  Input.generate(graphics.canvas)
+
+  if(!start){
+    start = true
+    setInterval(()=>{
+      console.log(Input.onDrag(), Input.dragX, Input.dragY)
+    })
   }
 }
 
@@ -107,7 +117,8 @@ function App() {
 
       const asyncFunc = async()=>{
         try {
-          await EngineStart()
+          // await EngineStart()
+          testInput()
         } catch (error) {
           console.error(error)
         }
@@ -122,7 +133,7 @@ function App() {
         ref={canvasRef}
         width={800}
         height={600}
-        style={{border: "1px solid black", backgroundColor: "white"}}
+        style={{border: "1px solid white"}}
       />
     </>
   )

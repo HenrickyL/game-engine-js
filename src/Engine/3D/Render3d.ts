@@ -75,6 +75,7 @@ export class Render3d{
         this._angleZRad = settings.angleZ 
         this._angleYRad = settings.angleY 
         if(settings.theta &&  settings.theta != this._theta){
+            this._lastTheta = this.theta
             this.theta = settings.theta
         }
 
