@@ -72,7 +72,11 @@ const EngineStart= async()=>{
       }
 
       if(Input.keyDown(InputKeys.S)){
-        z-=tick
+        let mult = 1
+        if(Input.keyDown(InputKeys.ShiftLeft)){
+          mult = 5
+        }
+        z-=tick*mult
         graph.z = z
       }
 
