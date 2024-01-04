@@ -78,8 +78,8 @@ export class Input{
         Input._mouseClickUpPosition.x = mouseX
         Input._mouseClickUpPosition.y = mouseY
         Input._onMouseClick = false
-        Input._dragX = 0
-        Input._dragY = 0
+        // Input._dragX = 0
+        // Input._dragY = 0
     }
 
     private static onElapsed(lastTime:number, elapseTime: number):boolean{
@@ -113,11 +113,11 @@ export class Input{
         const dy = Input._mousePosition.y - Input._mouseClickPosition.y
         
         if(Input._mouseClickPosition.x != -1){
-            Input._dragX = dx * Input._canvas.height/Input._canvas.width
-            Input._dragY = dy * Input._canvas.height/Input._canvas.width
+            Input._dragX += dx * 0.1
+            Input._dragY += dy * 0.1
         }else{
-            Input._dragX = 0
-            Input._dragY = 0
+            // Input._dragX = 0
+            // Input._dragY = 0
         }
 
         return Math.abs(dx) > Input._dragElapse || Math.abs(dy) > Input._dragElapse

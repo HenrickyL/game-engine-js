@@ -12,7 +12,7 @@ export abstract class TriangleMiddleware{
         return  result.z<0
     }
 
-    static generate(vertices: Vector3d[], color: Color= Color.BLUE):Triangle{
+    static generate(vertices: Vector3d[], color: Color= Color.getRandom()):Triangle{
         return{
             vertices,
             color

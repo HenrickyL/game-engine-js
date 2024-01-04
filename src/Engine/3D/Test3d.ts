@@ -1,3 +1,4 @@
+import { ObjLoaderPerformanceError } from "../Errors";
 import { Color } from "../middleware/Color";
 import { Mesh } from "./Mesh";
 import { Triangle, TriangleMiddleware } from "./Triangle";
@@ -22,34 +23,34 @@ export class Test3d {
                     reject
                 );
             }) as THREE.Group;
-            let loadedMesh: THREE.Mesh | undefined;
+            let loadedMesh: THREE.Mesh[] = [];
 
-        // Encontra um mesh entre as crianças do objeto carregado
-        object.traverse((child) => {
-            if (child instanceof THREE.Mesh) {
-                loadedMesh = child;
-            }
-        });
-
-        if (!loadedMesh) {
-            throw new Error('Nenhuma geometria de mesh encontrada no objeto carregado.');
-        }
-
-        const geometry = loadedMesh.geometry as THREE.BufferGeometry;
-            const triangles: Triangle[] = [];
-            if (geometry) {
-                const positions = geometry.attributes.position.array;
-
-                for (let i = 0; i < positions.length; i += 9) {
-                    const p1: Vector3d = { x: positions[i], y: positions[i + 1], z: positions[i + 2] };
-                    const p2: Vector3d = { x: positions[i + 3], y: positions[i + 4], z: positions[i + 5] };
-                    const p3: Vector3d = { x: positions[i + 6], y: positions[i + 7], z: positions[i + 8] };
-                    const triangle = TriangleMiddleware.generate([p1,p2,p3])
-                    triangles.push(triangle);
+            // Encontra um mesh entre as crianças do objeto carregado
+            object.children.forEach((child) => {
+                if (child instanceof THREE.Mesh) {
+                    loadedMesh.push(child);
                 }
-                const mesh: Mesh = { triangles };
-                return mesh;
-            }
+            });
+            const mesh: Mesh = { triangles:[] };
+            loadedMesh.forEach(obj=>{
+                const geometry = obj.geometry as THREE.BufferGeometry;
+                if (geometry) {
+                    const positions = geometry.attributes.position.array;
+                    console.log(positions.length/3)
+                    // if(positions.length/3 > 150000){
+                    //     throw new ObjLoaderPerformanceError()
+                    // }
+                    for (let i = 0; i < positions.length; i += 9) {
+                        const p1: Vector3d = { x: positions[i], y: positions[i + 1], z: positions[i + 2] };
+                        const p2: Vector3d = { x: positions[i + 3], y: positions[i + 4], z: positions[i + 5] };
+                        const p3: Vector3d = { x: positions[i + 6], y: positions[i + 7], z: positions[i + 8] };
+                        const triangle = TriangleMiddleware.generate([p1,p2,p3])
+                        mesh.triangles.push(triangle)
+                    }
+                }
+            })
+            return mesh
+            
             throw new Error('Object is not an instance of THREE.Mesh');
         } catch (error) {
             console.error('Error loading object:', error);
@@ -71,18 +72,18 @@ export class Test3d {
         const p101: Vector3d = { x: 1, y: 0, z: 1 };
     
         const triangles: Triangle[] = [
-            TriangleMiddleware.generate([p000, p010, p110], Color.getRandom()),
-            TriangleMiddleware.generate([p000, p110, p100], Color.getRandom()),
-            TriangleMiddleware.generate([p100, p110, p111], Color.getRandom()),
-            TriangleMiddleware.generate([p100, p111, p101], Color.getRandom()),
-            TriangleMiddleware.generate([p101, p111, p011], Color.getRandom()),
-            TriangleMiddleware.generate([p101, p011, p001], Color.getRandom()),
-            TriangleMiddleware.generate([p001, p011, p010], Color.getRandom()),
-            TriangleMiddleware.generate([p001, p010, p000], Color.getRandom()),
-            TriangleMiddleware.generate([p010, p011, p111], Color.getRandom()),
-            TriangleMiddleware.generate([p010, p111, p110], Color.getRandom()),
-            TriangleMiddleware.generate([p101, p001, p000], Color.getRandom()),
-            TriangleMiddleware.generate([p101, p000, p100], Color.getRandom()),
+            TriangleMiddleware.generate([p000, p010, p110]),
+            TriangleMiddleware.generate([p000, p110, p100]),
+            TriangleMiddleware.generate([p100, p110, p111]),
+            TriangleMiddleware.generate([p100, p111, p101]),
+            TriangleMiddleware.generate([p101, p111, p011]),
+            TriangleMiddleware.generate([p101, p011, p001]),
+            TriangleMiddleware.generate([p001, p011, p010]),
+            TriangleMiddleware.generate([p001, p010, p000]),
+            TriangleMiddleware.generate([p010, p011, p111]),
+            TriangleMiddleware.generate([p010, p111, p110]),
+            TriangleMiddleware.generate([p101, p001, p000]),
+            TriangleMiddleware.generate([p101, p000, p100]),
         ];
     
         return { triangles };

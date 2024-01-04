@@ -46,3 +46,9 @@ export class CanvasContextError extends ThrowError{
         super("Context Canvas not working.")
     }
 }
+
+export class ObjLoaderPerformanceError extends ThrowError{
+    constructor(){
+        super("The loaded object contains many triangles in the mesh, which would cause a performance problem. Sorry about that.")
+    }
+}

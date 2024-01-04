@@ -23,14 +23,20 @@ const EngineStart= async()=>{
     const graphics = new Graphics()
     const test = new Test3d()
     const graph = new Render3d(graphics)
-    const obj = await test.getObj('src\\public\\tree.obj')
+    const tree = await test.getObj('src\\public\\tree.obj')
+    const sphere = await test.getObj('src\\public\\sphere.obj')
+    const object = await test.getObj('src\\public\\Jeep.obj')
+    const car = await test.getObj('src\\public\\car.obj')
+
 
     const forms = [
       test.getCube(),
-      obj,
       test.getHexagonalPrism(),
       test.getPyramid(),
-      test.getSphere()
+      tree,
+      sphere,
+      object,
+      car
     ]
 
     let index = 0
@@ -58,7 +64,11 @@ const EngineStart= async()=>{
       }
 
       if(Input.keyDown(InputKeys.W)){
-        z+=tick
+        let mult = 1
+        if(Input.keyDown(InputKeys.ShiftLeft)){
+          mult = 5
+        }
+        z+=tick*mult
         graph.z = z
       }
 
