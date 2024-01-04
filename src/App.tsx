@@ -30,7 +30,7 @@ const EngineStart= async()=>{
 
 
     const forms = [
-      test.getCube2(),
+      test.getCube(),
       test.getHexagonalPrism(),
       test.getPyramid(),
       tree,
