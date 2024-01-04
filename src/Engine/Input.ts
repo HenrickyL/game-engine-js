@@ -13,10 +13,16 @@ export class Input{
     private static _onMouseClick : boolean = false
     private static _mousePosition: Position = Position.Default
     private static _mouseClickPosition: Position = Position.Default
+    private static _mouseClickUpPosition: Position = Position.Default
     private static _mouseWheel: number = 0
     private static _lastMouseWheelTime: number = 0
-    private static _mouseWheelResetDelay: number = 500
+    private static _timeResetDelay: number = 600
     private static _onPositiveWheel : boolean = false
+
+    private static _dragX: number =0
+    private static _dragY: number =0
+    private static _dragElapse: number = 5
+    private static _lastTimeDrag: number = 0
 
 
     private constructor(){
@@ -58,37 +64,64 @@ export class Input{
         const mouseY = event.clientY - Input._offsetY
         Input._mouseClickPosition.x = mouseX
         Input._mouseClickPosition.y = mouseY
+        Input._mouseClickUpPosition.x = -1
+        Input._mouseClickUpPosition.y = -1
         Input._onMouseClick = true
     }
 
     private onMouseUp(event : MouseEvent){
-        const mouseX = -1
-        const mouseY = -1
-        Input._mouseClickPosition.x = mouseX
-        Input._mouseClickPosition.y = mouseY
+        const mouseX = event.clientX - Input._offsetX
+        const mouseY = event.clientY - Input._offsetY
+        Input._mouseClickPosition.x = -1
+        Input._mouseClickPosition.y = -1
+
+        Input._mouseClickUpPosition.x = mouseX
+        Input._mouseClickUpPosition.y = mouseY
         Input._onMouseClick = false
+        Input._dragX = 0
+        Input._dragY = 0
     }
 
-    private onMouseWheel(event: WheelEvent){
+    private static onElapsed(lastTime:number, elapseTime: number):boolean{
         const currentTime = performance.now() 
-        const elapsed = currentTime - Input._lastMouseWheelTime
+        const elapsed = currentTime - lastTime
 
-        if(elapsed > Input._mouseWheelResetDelay){
+        return elapsed > elapseTime
+    }
+    private onMouseWheel(event: WheelEvent){
+
+        if(Input.onElapsed(Input._lastMouseWheelTime, Input._lastMouseWheelTime)){
             Input._mouseWheel = 0
         }else{
             const mouseWheel = event.deltaY
             Input._onPositiveWheel = mouseWheel>0
             Input._mouseWheel += Math.round(mouseWheel/150)
         }
-        Input._lastMouseWheelTime = currentTime
+        Input._lastMouseWheelTime = performance.now()
     }
 
     private onKeyUp(event: KeyboardEvent){
         const key = event.code as InputKeys;
         Input._keys[key] = false
         Input._ctrl[key] = false
+        
     }
 
+//--------------------------------
+    private static onDragged(): boolean{
+        const dx = Input._mousePosition.x - Input._mouseClickPosition.x
+        const dy = Input._mousePosition.y - Input._mouseClickPosition.y
+        
+        if(Input._mouseClickPosition.x != -1){
+            Input._dragX = dx
+            Input._dragY = dy
+        }else{
+            Input._dragX = 0
+            Input._dragY = 0
+        }
+
+        return Math.abs(dx) > Input._dragElapse || Math.abs(dy) > Input._dragElapse
+    }
 //--------------------------------
     static keyDown(keyCode: InputKeys): boolean{
         return Input._keys[keyCode]
@@ -140,5 +173,27 @@ export class Input{
 
     static getOnMouseClick():boolean{
         return this._onMouseClick
+    }
+
+    static onDrag():boolean{
+        return this._onMouseClick 
+            && Input.onDragged()
+    }
+
+
+    static onDragX():boolean{
+        return Input.onDrag() && Input._dragX>0
+    }
+
+    static onDragY():boolean{
+        return Input.onDrag() && Input._dragY>0
+    }
+
+    static get dragX(): number{
+        return Input._dragX
+    }
+
+    static get dragY(): number{
+        return Input._dragY
     }
 }
