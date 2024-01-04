@@ -71,9 +71,9 @@ export class Render3d{
 
     
     update(settings:UpdateSettings = {angleX:0, angleZ:0, angleY:0}){
-        this._angleXRad = settings.angleX 
-        this._angleZRad = settings.angleZ 
-        this._angleYRad = settings.angleY 
+        this._angleXRad = settings.angleX /180 * Math.PI
+        this._angleZRad = settings.angleZ /180 * Math.PI
+        this._angleYRad = settings.angleY /180 * Math.PI
         if(settings.theta &&  settings.theta != this._theta){
             this._lastTheta = this.theta
             this.theta = settings.theta
@@ -202,7 +202,7 @@ export class Render3d{
                 res.y *= 0.5 * this._height 
                 return res
             })
-            const resultTriangle = TriangleMiddleware.generate(result)
+            const resultTriangle = TriangleMiddleware.generate(result, triangle.color)
             return this.lightCalculation(resultTriangle, normal)
         }
         return null
@@ -234,7 +234,7 @@ export class Render3d{
 
     private preProjectionCalculation(triangle: Triangle): Triangle{
         const vertices = triangle.vertices
-        const result: Triangle = TriangleMiddleware.generate([])
+        const result: Triangle = TriangleMiddleware.generate([], triangle.color)
 
         vertices.forEach(vertex=>{
             const vY = this.multiplyMatrixVector(vertex, this._matRotY)

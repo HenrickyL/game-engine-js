@@ -1,3 +1,4 @@
+import { Color } from "../middleware/Color";
 import { Mesh } from "./Mesh";
 import { Triangle, TriangleMiddleware } from "./Triangle";
 import {Vector3d} from './Vector3d'
@@ -70,18 +71,18 @@ export class Test3d {
         const p101: Vector3d = { x: 1, y: 0, z: 1 };
     
         const triangles: Triangle[] = [
-            TriangleMiddleware.generate([p000, p010, p110]),
-            TriangleMiddleware.generate([p000, p110, p100]),
-            TriangleMiddleware.generate([p100, p110, p111]),
-            TriangleMiddleware.generate([p100, p111, p101]),
-            TriangleMiddleware.generate([p101, p111, p011]),
-            TriangleMiddleware.generate([p101, p011, p001]),
-            TriangleMiddleware.generate([p001, p011, p010]),
-            TriangleMiddleware.generate([p001, p010, p000]),
-            TriangleMiddleware.generate([p010, p011, p111]),
-            TriangleMiddleware.generate([p010, p111, p110]),
-            TriangleMiddleware.generate([p101, p001, p000]),
-            TriangleMiddleware.generate([p101, p000, p100]),
+            TriangleMiddleware.generate([p000, p010, p110], Color.getRandom()),
+            TriangleMiddleware.generate([p000, p110, p100], Color.getRandom()),
+            TriangleMiddleware.generate([p100, p110, p111], Color.getRandom()),
+            TriangleMiddleware.generate([p100, p111, p101], Color.getRandom()),
+            TriangleMiddleware.generate([p101, p111, p011], Color.getRandom()),
+            TriangleMiddleware.generate([p101, p011, p001], Color.getRandom()),
+            TriangleMiddleware.generate([p001, p011, p010], Color.getRandom()),
+            TriangleMiddleware.generate([p001, p010, p000], Color.getRandom()),
+            TriangleMiddleware.generate([p010, p011, p111], Color.getRandom()),
+            TriangleMiddleware.generate([p010, p111, p110], Color.getRandom()),
+            TriangleMiddleware.generate([p101, p001, p000], Color.getRandom()),
+            TriangleMiddleware.generate([p101, p000, p100], Color.getRandom()),
         ];
     
         return { triangles };

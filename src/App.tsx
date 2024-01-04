@@ -7,6 +7,7 @@ import { Graphics } from "./Engine/Graphics"
 import { InputKeys } from "./Engine/enums"
 import { Input } from "./Engine/Input"
 import { Color } from "./Engine/middleware/Color"
+import { Point } from "./Engine/Geometry"
 
 
 let start = false
@@ -72,15 +73,15 @@ const EngineStart= async()=>{
       }
 
       if(Input.onDragY()){
-        angleX = Input.dragY/ 100
+        angleX = Input.dragY
       }
       if(Input.onDragX()){
-        angleY = Input.dragX/ 100
+        angleY = Input.dragX
       }
 
       if(Input.getMouseWheel() != 0){
         const value = Input.getMouseWheel()
-        angleZ = value*0.5
+        angleZ = value*20
       }
     }, 100)
     setInterval(()=>{
@@ -94,12 +95,12 @@ const EngineStart= async()=>{
 const testInput = ()=>{
   const graphics = new Graphics()
   Input.generate(graphics.canvas)
-
+  const p = Input.getMouse()
   if(!start){
     start = true
     setInterval(()=>{
       console.log(Input.onDrag(), Input.dragX, Input.dragY)
-    })
+    },100)
   }
 }
 
@@ -117,8 +118,8 @@ function App() {
 
       const asyncFunc = async()=>{
         try {
-          // await EngineStart()
-          testInput()
+          await EngineStart()
+          // testInput()
         } catch (error) {
           console.error(error)
         }

@@ -42,9 +42,9 @@ export class Input{
     private eventHandle(): void{
         document.addEventListener('keydown', this.onKeyDown.bind(this))
         document.addEventListener('keyup', this.onKeyUp.bind(this))
-        Input._canvas.addEventListener('mousemove', this.onMouseMove.bind(this))
-        Input._canvas.addEventListener('mousedown', this.onMouseDown.bind(this))
-        Input._canvas.addEventListener('mouseup', this.onMouseUp.bind(this))
+        document.addEventListener('mousemove', this.onMouseMove.bind(this))
+        document.addEventListener('mousedown', this.onMouseDown.bind(this))
+        document.addEventListener('mouseup', this.onMouseUp.bind(this))
         document.addEventListener('wheel', this.onMouseWheel.bind(this))
     }
     private onKeyDown(event: KeyboardEvent):void{
@@ -113,8 +113,8 @@ export class Input{
         const dy = Input._mousePosition.y - Input._mouseClickPosition.y
         
         if(Input._mouseClickPosition.x != -1){
-            Input._dragX = dx
-            Input._dragY = dy
+            Input._dragX = dx * Input._canvas.height/Input._canvas.width
+            Input._dragY = dy * Input._canvas.height/Input._canvas.width
         }else{
             Input._dragX = 0
             Input._dragY = 0
@@ -182,11 +182,11 @@ export class Input{
 
 
     static onDragX():boolean{
-        return Input.onDrag() && Input._dragX>0
+        return Input.onDrag() && Input._dragX !=0
     }
 
     static onDragY():boolean{
-        return Input.onDrag() && Input._dragY>0
+        return Input.onDrag() && Input._dragY !=0
     }
 
     static get dragX(): number{

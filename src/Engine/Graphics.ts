@@ -66,8 +66,9 @@ export class Graphics{
 
     public clear(): void{
         if(this._context){
-            this._context.fillStyle = "black"
+            this._context.fillStyle = "gray"
             this._context.clearRect(0,0, this.width, this.height)
+            this._context.fillRect(0,0, this.width, this.height)
         }
     }
 

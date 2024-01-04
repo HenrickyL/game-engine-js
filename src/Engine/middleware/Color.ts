@@ -1,3 +1,5 @@
+import { randInt } from "three/src/math/MathUtils.js";
+
 export class Color {
     private static _black: Color;
     private static _red: Color;
@@ -48,6 +50,10 @@ export class Color {
 
     get RGB(): string {
         return `rgb(${this.r},${this.g},${this.b})`;
+    }
+
+    static getRandom():Color{
+        return new Color(randInt(0,255), randInt(0,255), randInt(0,255))
     }
 
     static get BLACK(): Color {
