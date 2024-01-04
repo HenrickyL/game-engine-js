@@ -25,11 +25,11 @@ const EngineStart= async()=>{
     const obj = await test.getObj('src\\public\\tree.obj')
 
     const forms = [
-        obj,
-        test.getCube(),
-        test.getHexagonalPrism(),
-        test.getPyramid(),
-        test.getSphere()
+      test.getCube(),
+      obj,
+      test.getHexagonalPrism(),
+      test.getPyramid(),
+      test.getSphere()
     ]
 
     let index = 0

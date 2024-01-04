@@ -1,6 +1,7 @@
 import { Point, Polygon } from "../Geometry"
 import { Graphics } from "../Graphics"
 import { Color } from "../middleware/Color"
+import { Vector } from "../middleware/Vector"
 import { Matrix4x4 } from "./Matrix4x4"
 import { Mesh } from "./Mesh"
 import { Triangle, TriangleMiddleware } from "./Triangle"
@@ -51,6 +52,8 @@ export class Render3d{
 
     //init can
     private _camera: Vector3d
+    //light
+    private _lightDirection: Vector
 
     //test
     private _angleXRad: number = 0
@@ -61,7 +64,8 @@ export class Render3d{
 
     constructor(graphics: Graphics, theta: number = 90, zNear: number = 0, zFar:number = 0){
         this._graphics = graphics
-        this._camera = {x:0,y:0,z:0}  
+        this._camera = {x:0,y:0,z:0}
+        this._lightDirection = new Vector(0,0,-1)
         this.setProjectionParams(graphics.width, graphics.height, theta, zFar, zNear)
     }
 
@@ -87,9 +91,9 @@ export class Render3d{
             const projectedTriangle = this.projectVertex(triangle)
             if(projectedTriangle){
                 if(settings.isPoint)
-                    Point.draw(this._graphics.context, projectedTriangle.vertices,{isSquare: false, size: 5})
+                    Point.draw(this._graphics.context, projectedTriangle.vertices,{color: projectedTriangle.color, isSquare: false, size: 5})
                 else
-                    Polygon.draw(this._graphics.context, projectedTriangle.vertices, settings.isColor? {fillColor: Color.GREEN}: {})
+                    Polygon.draw(this._graphics.context, projectedTriangle.vertices, {fillColor: projectedTriangle.color})
             }
         })
     }
@@ -169,10 +173,8 @@ export class Render3d{
         
     }
 
-    private onSeeTriangle(triangle: Triangle): boolean{
+    private onSeeTriangle(triangle: Triangle, normal: Vector3d): boolean{
         if(this._onWireframe) return true;
-        const normal = Vector3DMiddleware.normalTriangle(triangle)
-
         const v = triangle.vertices
         //same plane, so i can take any point
         const adjust:Vector3d = {
@@ -183,11 +185,12 @@ export class Render3d{
         return Vector3DMiddleware.dotProduct(normal,adjust) < 0
     }
 
-    private projectVertex(triangle: Triangle): Triangle | null{
-        const vertices = triangle.vertices
-        const triangleTranslated = this.preProjectionCalculation(vertices)
 
-        if(this.onSeeTriangle(triangleTranslated)){
+    private projectVertex(triangle: Triangle): Triangle | null{
+        const triangleTranslated = this.preProjectionCalculation(triangle)
+        const normal: Vector3d = Vector3DMiddleware.normalTriangle(triangleTranslated)
+
+        if(this.onSeeTriangle(triangleTranslated, normal)){
             const result: Vector3d[] = triangleTranslated.vertices
             .map(vertex=>{
                 const res = this.multiplyMatrixVector(vertex, this._matrixProjection)
@@ -198,14 +201,39 @@ export class Render3d{
                 res.y *= 0.5 * this._height 
                 return res
             })
-            
-            return {vertices: result}
+            const resultTriangle = TriangleMiddleware.generate(result)
+            return this.lightCalculation(resultTriangle, normal)
         }
         return null
     }
+    private lightCalculation(triangle: Triangle, normal: Vector3d): Triangle{
+        const light = this._lightDirection
+        const lightUnit = light.unitary()
+        const lightVecUnit: Vector3d = {x: lightUnit.x, y: lightUnit.y, z: lightUnit.z}
+        const luminosity = Vector3DMiddleware.dotProduct(lightVecUnit, normal)
+        triangle.color = triangle.color.modifyColor(luminosity)
+        return triangle
+    }
 
-    private preProjectionCalculation(vertices: Vector3d[]): Triangle{
-        const result: Triangle = {vertices: []}
+    // private preProjectionCalculation(triangle: Triangle): Triangle{
+    //     triangle.vertices = triangle.vertices.map(vertex=>{
+    //         const vY = this.multiplyMatrixVector(vertex, this._matRotY)
+    //         const vZ = this.multiplyMatrixVector(vY, this._matRotZ)
+    //         const v = this.multiplyMatrixVector(vZ, this._matRotX)
+    
+    //         const translatedVertex: Vector3d = {
+    //             x: v.x,
+    //             y: v.y,
+    //             z: v.z+ this._zDistance
+    //         }
+    //         return translatedVertex
+    //     })
+    //     return triangle
+    // }
+
+    private preProjectionCalculation(triangle: Triangle): Triangle{
+        const vertices = triangle.vertices
+        const result: Triangle = TriangleMiddleware.generate([])
 
         vertices.forEach(vertex=>{
             const vY = this.multiplyMatrixVector(vertex, this._matRotY)
