@@ -8,7 +8,7 @@ export class Color {
     private static _yellow: Color;
     private static _white: Color;
     private static _transparent: Color;
-
+    private static _magenta: Color;
 
     constructor(
         private _r: number,
@@ -97,6 +97,13 @@ export class Color {
             Color._white = new Color(255, 255, 255);
         }
         return Color._white;
+    }
+
+    static get MAGENTA(): Color {
+        if (!Color._magenta) {
+            Color._magenta = new Color(255, 0, 255);
+        }
+        return Color._magenta;
     }
 
     static get TRANSPARENT(): Color {
