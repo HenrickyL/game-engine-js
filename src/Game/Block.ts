@@ -1,7 +1,6 @@
 import { GameObject } from "../Engine/GameObject";
 import { Rect } from "../Engine/Geometry";
-import { Scene } from "../Engine/Scene";
-import { randFloat, randInt } from "../Engine/middleware";
+import { MathMiddleware} from "../Engine/middleware";
 import { Color } from "../Engine/middleware/Color";
 import { Position } from "../Engine/middleware/Position";
 import { Vector } from "../Engine/middleware/Vector";
@@ -12,7 +11,9 @@ export class Block extends GameObject{
     private _callback: (current: Block)=>void
     constructor(position: Position, callback: (current: Block)=>void) {
         super(position, new Rect(position, 40,40))
-        this.bbox.color = new Color(randInt(0,255), randInt(0,255), randInt(0,255))
+        const randInt = MathMiddleware.randInt
+        const randFloat = MathMiddleware.randFloat
+        this.bbox.color = Color.getRandom()
         const direction = randInt(-3,3) >0 ? Vector.Right : Vector.Left
         this.speed = Vector.Down.add(direction.prod(randFloat(-0.5,1.2)))
         this.speedMag = 12

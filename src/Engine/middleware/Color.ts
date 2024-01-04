@@ -1,4 +1,4 @@
-import { randInt } from "three/src/math/MathUtils.js";
+import { MathMiddleware } from ".";
 
 export class Color {
     private static _black: Color;
@@ -53,7 +53,8 @@ export class Color {
     }
 
     static getRandom():Color{
-        return new Color(randInt(0,255), randInt(0,255), randInt(0,255))
+        const rand = MathMiddleware.randInt
+        return new Color(rand(0,255), rand(0,255), rand(0,255))
     }
 
     static get BLACK(): Color {

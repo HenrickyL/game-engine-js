@@ -1,3 +1,4 @@
+import { MathMiddleware } from ".";
 import { Circle, Geometry, Point, Rect } from "../Geometry";
 import { Position } from "./Position";
 
@@ -30,8 +31,8 @@ export abstract class CollisionDetection{
     }
 
     private static collisionRectCircle(rect:Rect, circle:Circle):boolean{
-        let closestX = clamp(circle.position.x, rect.left, rect.right);
-        let closestY = clamp(circle.position.y, rect.top, rect.bottom);
+        let closestX = MathMiddleware.clamp(circle.position.x, rect.left, rect.right);
+        let closestY = MathMiddleware.clamp(circle.position.y, rect.top, rect.bottom);
 
         let distanceX = circle.position.x - closestX;
         let distanceY = circle.position.y - closestY;
@@ -73,9 +74,4 @@ export abstract class CollisionDetection{
         const point = new Point(position)
         return CollisionDetection.collision(point, geometry)
     }
-}
-
-
-function clamp(value:number, min:number, max:number):number {
-    return Math.max(min, Math.min(max, value));
 }

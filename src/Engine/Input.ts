@@ -42,10 +42,10 @@ export class Input{
     private eventHandle(): void{
         document.addEventListener('keydown', this.onKeyDown.bind(this))
         document.addEventListener('keyup', this.onKeyUp.bind(this))
-        document.addEventListener('mousemove', this.onMouseMove.bind(this))
-        document.addEventListener('mousedown', this.onMouseDown.bind(this))
+        Input._canvas.addEventListener('mousemove', this.onMouseMove.bind(this))
+        Input._canvas.addEventListener('mousedown', this.onMouseDown.bind(this))
         document.addEventListener('mouseup', this.onMouseUp.bind(this))
-        document.addEventListener('wheel', this.onMouseWheel.bind(this))
+        Input._canvas.addEventListener('wheel', this.onMouseWheel.bind(this))
     }
     private onKeyDown(event: KeyboardEvent):void{
         const key = event.code as InputKeys;
