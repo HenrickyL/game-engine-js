@@ -112,12 +112,12 @@ const EngineStart= async()=>{
         timer.resetTimer()
         graph.render(mesh, {isPoint, isColor})
         timer.stopTimer()
-        const value = timer.getElapsedSeconds()
+        const value = timer.getElapsedMiliSeconds()
         sum += value
         count++
         if(count !=0){
           const av = value
-          log.text = `${av.toFixed(3)} s`
+          log.text = `${av.toFixed(3)} ms`
           log.draw(graphics.context)
         }
     }, 1000/45)

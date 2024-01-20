@@ -160,18 +160,7 @@ export class Render3d{
     }
 
     private calculatedMatrixProjection(){
-        this._matrixProjection = new Matrix4x4()
-        const a = this._aspectRatio
-        const f = this._FovRad
-        const af = a *f 
-        const q = this._zFar/(this._zFar - this._zNear)
-        const zNearQ = (-this._zFar * this._zNear)/(this._zFar - this._zNear)
-
-        this._matrixProjection.set(0,0, af)
-        this._matrixProjection.set(1,1, f)
-        this._matrixProjection.set(2,2, q)
-        this._matrixProjection.set(3,2, zNearQ)
-        this._matrixProjection.set(2,3, 1)
+        this._matrixProjection = Matrix4x4.MakeProjection(this._theta, this._aspectRatio,this._zNear, this._zFar)
     }
 
     private calculatedMatrixRotateZ(){
@@ -275,18 +264,12 @@ export class Render3d{
     }
 
 
-    private multiplyMatrixVector(p: Vector, matrix: Matrix4x4): Vector{
-        const m = matrix.matrix
-        const result: Vector  = new Vector(
-            p.x * m[0][0] + p.y * m[1][0] + p.z * m[2][0] + m[3][0],
-            p.x * m[0][1] + p.y * m[1][1] + p.z * m[2][1] + m[3][1],
-            p.x * m[0][2] + p.y * m[1][2] + p.z * m[2][2] + m[3][2]
-        )
-        const w = p.x * m[0][3] + p.y * m[1][3] + p.z *m[2][3] + m[3][3]
-        if(w !== 0){
-            result.x /= w
-            result.y /= w
-            result.z /= w
+    private multiplyMatrixVector(v: Vector, matrix: Matrix4x4): Vector{
+        const result = Matrix4x4.multiplyMatrixVector(v, matrix)
+        if(result.w !== 0){
+            result.x /= result.w
+            result.y /= result.w
+            result.z /= result.w
         }
         return result
     }
@@ -305,6 +288,7 @@ export class Render3d{
     }
 
     set z(value:number){
+        if(value > 0)
         this._zDistance = value
         this._isChanged =true
     }

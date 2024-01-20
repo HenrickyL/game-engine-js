@@ -2,8 +2,8 @@ export class Vector{
     constructor(
         private _x: number = 0,
         private _y: number = 0,
-        private _z: number = 0
-
+        private _z: number = 0,
+        private _w: number = 0
     ){}
     get x(): number{
         return this._x
@@ -29,6 +29,14 @@ export class Vector{
         this._z = value
     }
 
+    get w():number{
+        return this._w
+    }
+
+    set w(value: number){
+        this._w = value
+    }
+
     add(other: Vector): Vector{
         return new Vector(this.x + other.x, this.y + other.y, this.z + other.z)
     }
@@ -37,7 +45,6 @@ export class Vector{
         this._x += other.x
         this._y += other.y
         this._z += other.z
-
     }
 
     sub(other: Vector): Vector{
