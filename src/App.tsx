@@ -9,6 +9,9 @@ import { Input } from "./Engine/Input"
 import { Color } from "./Engine/middleware/Color"
 import { Point, Polygon } from "./Engine/Geometry"
 import { Vector3d } from "./Engine/3D/Vector3d"
+import { Text } from "./Engine/middleware/Text"
+import { Vector } from "./Engine/middleware/Vector"
+import { Timer } from "./Engine/Timer"
 
 
 let start = false
@@ -27,6 +30,11 @@ const EngineStart= async()=>{
     const tree = await test.getObj('src\\public\\tree.obj')
     const sphere = await test.getObj('src\\public\\sphere.obj')
     const object = await test.getObj('src\\public\\Jeep.obj')
+    const log = new Text("test",graphics.bottomRight, {color:Color.BLUE, size:30})
+    log.translateTo(new Vector(-50,0))
+    const timer = new Timer()
+    let sum = 0
+    let count = 0
 
 
     const forms = [
@@ -60,6 +68,8 @@ const EngineStart= async()=>{
       if(Input.keyPress(InputKeys.Space)){
         index = (index + 1) % forms.length
         mesh = forms[index]
+        sum=0
+        count=0
       }
 
       if(Input.keyDown(InputKeys.W)){
@@ -99,7 +109,13 @@ const EngineStart= async()=>{
     }, 100)
     setInterval(()=>{
         graph.update({angleX, angleZ, angleY})
+        timer.resetTimer()
         graph.render(mesh, {isPoint, isColor})
+        timer.stopTimer()
+        sum += timer.getElapsedMiliSeconds()
+        count++
+        log.text = `${(sum/count).toFixed(3)}`
+        log.draw(graphics.context)
     }, 1000/45)
   }
 }
@@ -108,8 +124,11 @@ const EngineStart= async()=>{
 const testInput = ()=>{
   const graphics = new Graphics()
   Input.generate(graphics.canvas)
+  const log = new Text("aaa",graphics.middleCenter, {color:Color.RED, size:20})
+
 
   if(!start){
+    graphics.clear()
     start = true
     const a1:Vector3d = {x:10,y:100,z:100}
     const a2:Vector3d = {x:70,y:40,z:0}
@@ -125,6 +144,7 @@ const testInput = ()=>{
     Polygon.draw(graphics.context,[b1, b2,b3],{fillColor: color})
 
     Point.draw(graphics.context,[a1,a2,a3],{color: Color.BLACK, size:5})
+    log.draw(graphics.context)
   }
 }
 
