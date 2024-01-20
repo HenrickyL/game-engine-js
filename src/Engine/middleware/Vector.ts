@@ -68,6 +68,46 @@ export class Vector{
         return Math.sqrt(this.x*this.x + this.y*this.y + this.z*this.z)
     }
 
+    crossProduct(other: Vector): Vector{
+        return Vector.crossProduct(this, other)
+    }
+
+    vectorTo(other: Vector): Vector{
+        return Vector.vectorTo(this, other)
+    }
+
+    dotProduct( other:Vector): number{
+        return Vector.dotProduct(this, other)
+    }
+    //------------------------------------------------------
+    static crossProduct(A: Vector, B: Vector): Vector{
+        return new Vector(
+            A.y*B.z - A.z*B.y,
+            A.z*B.x - A.x*B.z,
+            A.x*B.y - A.y*B.x
+        )
+    }
+    static vectorTo(p1: Vector, p2: Vector): Vector{
+        return new Vector(
+            p2.x - p1.x, 
+            p2.y - p1.y, 
+            p2.z - p1.z
+        )
+    }
+
+    static dotProduct(A: Vector, B:Vector): number{
+        return A.x*B.x + A.y*B.y + A.z*B.z
+    }
+
+    static unitary(vec: Vector): Vector{
+        const module = Math.sqrt(vec.x*vec.x + vec.y*vec.y + vec.z*vec.z)
+        return new Vector(
+            vec.x/module,
+            vec.y/module,
+            vec.z/module
+        )
+    }
+
     // Atributos estáticos
     static get Right(): Vector {
         return new Vector(1, 0, 0);
