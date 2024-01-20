@@ -79,6 +79,39 @@ export class Matrix4x4{
         }
         return result;
     }
+    //alpha beta gama
+    static MakeRotation(radX: number, radY: number, radZ: number): Matrix4x4 {
+        const cosX = Math.cos(radX)
+        const sinX = Math.sin(radX)
+
+        const sinY = Math.sin(radY)
+        const cosY = Math.cos(radY)
+
+        const cosZ = Math.cos(radZ)
+        const sinZ = Math.sin(radZ)
+
+
+        const m = new Matrix4x4()
+        // Rotação em torno do eixo x
+        m.set(0, 0, cosY * cosZ);
+        m.set(0, 1, -cosY * sinZ);
+        m.set(0, 2, sinY);
+        
+        // Rotação em torno do eixo y
+        m.set(1, 0, sinX * sinY * cosZ + cosX * sinZ);
+        m.set(1, 1, -sinX * sinY * sinZ + cosX * cosZ);
+        m.set(1, 2, -sinX * cosY);
+        
+        // Rotação em torno do eixo z
+        m.set(2, 0, -cosX * sinY * cosZ + sinX * sinZ);
+        m.set(2, 1, cosX * sinY * sinZ + sinX * cosZ);
+        m.set(2, 2, cosX * cosY);
+
+        // Os elementos da diagonal
+        m.set(3, 3, 1);
+        
+        return m
+    }
 
     static multiplyMatrixVector(p: Vector, matrix: Matrix4x4): Vector{
         const m = matrix.matrix

@@ -44,9 +44,7 @@ export class Render3d{
     private _FovRad: number = 0
 
     private _matrixProjection: Matrix4x4 = new Matrix4x4()
-    private _matRotX: Matrix4x4 = new Matrix4x4()
-    private _matRotZ: Matrix4x4 = new Matrix4x4()
-    private _matRotY: Matrix4x4 = new Matrix4x4()
+    private _matRotation: Matrix4x4 = new Matrix4x4()
 
     //init can
     private _camera: Vector
@@ -92,9 +90,7 @@ export class Render3d{
             this.theta = settings.theta
         }
         if(this._isChanged){
-            this.calculatedMatrixRotateX()
-            this.calculatedMatrixRotateY()
-            this.calculatedMatrixRotateZ()
+            this.calculatedMatrixRotation()
         }
 
         this._lastUpdateSettings = settings
@@ -153,9 +149,7 @@ export class Render3d{
         this._aspectRatio = this._height/ this._width
         this._FovRad = 1/ (Math.tan(this._theta * 0.5 / 180*Math.PI))
         this.calculatedMatrixProjection()
-        this.calculatedMatrixRotateX()
-        this.calculatedMatrixRotateZ()
-        this.calculatedMatrixRotateY()
+        this.calculatedMatrixRotation()
         console.log('setPRoj')
     }
 
@@ -163,50 +157,9 @@ export class Render3d{
         this._matrixProjection = Matrix4x4.MakeProjection(this._theta, this._aspectRatio,this._zNear, this._zFar)
     }
 
-    private calculatedMatrixRotateZ(){
-        this._matRotZ = new Matrix4x4() 
 
-        const angle = this._angleZRad
-        const sin = Math.sin(angle)
-        const cos = Math.cos(angle)
-        
-        this._matRotZ.set(0,0, cos)
-        this._matRotZ.set(0,1, sin)
-        this._matRotZ.set(1,0, -sin)
-        this._matRotZ.set(1,1, cos)
-        this._matRotZ.set(2,2, 1)
-        this._matRotZ.set(3,3, 1)
-
-    }
-    private calculatedMatrixRotateY(){
-        this._matRotY = new Matrix4x4() 
-
-        const angle = this._angleYRad
-        const sin = Math.sin(angle)
-        const cos = Math.cos(angle)
-        
-        this._matRotY.set(0,0, cos)
-        this._matRotY.set(0,1, 0)
-        this._matRotY.set(0,2, sin)
-        this._matRotY.set(1,1, 1)
-        this._matRotY.set(2,0, -sin)
-        this._matRotY.set(2,2, cos)
-    }
-
-    private calculatedMatrixRotateX(){
-        this._matRotX = new Matrix4x4() 
-
-        const angle = this._angleXRad
-        const sin = Math.sin(angle * 0.5)
-        const cos = Math.cos(angle * 0.5)
-        
-        this._matRotX.set(0,0, 1)
-        this._matRotX.set(1,1, cos)
-        this._matRotX.set(1,2, sin)
-        this._matRotX.set(2,1, -sin)
-        this._matRotX.set(2,2, cos)
-        this._matRotX.set(3,3, 1)
-        
+    private calculatedMatrixRotation(){
+        this._matRotation = Matrix4x4.MakeRotation(this._angleXRad, this._angleYRad, this._angleZRad)
     }
 
     private onSeeTriangle(triangle: Triangle, normal: Vector): boolean{
@@ -253,9 +206,7 @@ export class Render3d{
         const result: Triangle = new Triangle([], triangle.color)
 
         vertices.forEach(vertex=>{
-            const vY = this.multiplyMatrixVector(vertex, this._matRotY)
-            const vZ = this.multiplyMatrixVector(vY, this._matRotZ)
-            const v = this.multiplyMatrixVector(vZ, this._matRotX)
+            const v = this.multiplyMatrixVector(vertex, this._matRotation)
             // const v = vertex
             const translatedVertex = new Vector(v.x, v.y, v.z + this._zDistance)
             result.vertices.push(translatedVertex)
