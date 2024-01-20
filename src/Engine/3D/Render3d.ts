@@ -62,6 +62,7 @@ export class Render3d{
     //
     private _lastRender: Triangle[] = []
     private _isChanged: boolean = true
+    private _lastUpdateSettings: UpdateSettings = {angleX:0, angleZ:0, angleY:0}
 
 
     constructor(graphics: Graphics, theta: number = 90, zNear: number = 0, zFar:number = 0){
@@ -69,34 +70,49 @@ export class Render3d{
         this._camera = Vector.Zero
         this._lightDirection = Vector.Backward
         this.setProjectionParams(graphics.width, graphics.height, theta, zFar, zNear)
+        
     }
 
     
     update(settings:UpdateSettings = {angleX:0, angleZ:0, angleY:0}){
-        this._angleXRad = settings.angleX /180 * Math.PI
-        this._angleZRad = settings.angleZ /180 * Math.PI
-        this._angleYRad = settings.angleY /180 * Math.PI
+        if(settings.angleX !== this._lastUpdateSettings.angleX){
+            this._angleXRad = settings.angleX /180 * Math.PI
+            this._isChanged = true
+        }
+        if(settings.angleZ !== this._lastUpdateSettings.angleZ){
+            this._angleZRad = settings.angleZ /180 * Math.PI
+            this._isChanged = true
+        }
+        if(settings.angleY !== this._lastUpdateSettings.angleY){
+            this._angleYRad = settings.angleY /180 * Math.PI
+            this._isChanged = true
+        }
         if(settings.theta &&  settings.theta != this._theta){
             this._lastTheta = this.theta
             this.theta = settings.theta
         }
-
-        this.calculatedMatrixRotateX()
-        this.calculatedMatrixRotateZ()
-        this.calculatedMatrixRotateY()
-
-        if(!this._isChanged){
-            this._isChanged = true
+        if(this._isChanged){
+            this.calculatedMatrixRotateX()
+            this.calculatedMatrixRotateY()
+            this.calculatedMatrixRotateZ()
         }
+
+        this._lastUpdateSettings = settings
     }
     
 
     render(mesh: Mesh, settings: RenderSettings = {}){
         this._graphics.clear()
-       
-        const sortedTriangles = this.projectTrianglesAndSort(mesh)
-        this.drawTriangles(sortedTriangles, settings)
-        this._lastRender = sortedTriangles
+
+        let triangleToDraw = this._lastRender
+        if(this._isChanged){
+            console.log('Change')
+            const sortedTriangles = this.projectTrianglesAndSort(mesh)
+            triangleToDraw = sortedTriangles
+            this._lastRender = sortedTriangles
+        }
+        this.drawTriangles(triangleToDraw, settings)
+        this._isChanged = false
     }
     private projectTrianglesAndSort(mesh: Mesh):Triangle[]{
         const trianglesToDraw: Triangle[] = []
@@ -137,6 +153,10 @@ export class Render3d{
         this._aspectRatio = this._height/ this._width
         this._FovRad = 1/ (Math.tan(this._theta * 0.5 / 180*Math.PI))
         this.calculatedMatrixProjection()
+        this.calculatedMatrixRotateX()
+        this.calculatedMatrixRotateZ()
+        this.calculatedMatrixRotateY()
+        console.log('setPRoj')
     }
 
     private calculatedMatrixProjection(){
@@ -286,5 +306,14 @@ export class Render3d{
 
     set z(value:number){
         this._zDistance = value
+        this._isChanged =true
+    }
+
+    get isChanged():boolean{
+        return this._isChanged
+    }
+
+    set isChanged(value: boolean){
+        this._isChanged = value
     }
 }

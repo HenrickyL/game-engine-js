@@ -69,6 +69,7 @@ const EngineStart= async()=>{
         mesh = forms[index]
         sum=0
         count=0
+        graph.isChanged = true
       }
 
       if(Input.keyDown(InputKeys.W)){
@@ -111,12 +112,12 @@ const EngineStart= async()=>{
         timer.resetTimer()
         graph.render(mesh, {isPoint, isColor})
         timer.stopTimer()
-        const value = timer.getElapsedMiliSeconds()
+        const value = timer.getElapsedSeconds()
         sum += value
         count++
         if(count !=0){
-          const av = sum/count
-          log.text = `${av.toFixed(3)} ms`
+          const av = value
+          log.text = `${av.toFixed(3)} s`
           log.draw(graphics.context)
         }
     }, 1000/45)
