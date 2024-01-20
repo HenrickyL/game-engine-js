@@ -59,6 +59,7 @@ export class Render3d{
     private _angleYRad: number = 0
     private _zDistance:number = 2
 
+    
 
     constructor(graphics: Graphics, theta: number = 90, zNear: number = 0, zFar:number = 0){
         this._graphics = graphics
@@ -80,6 +81,8 @@ export class Render3d{
         this.calculatedMatrixRotateX()
         this.calculatedMatrixRotateZ()
         this.calculatedMatrixRotateY()
+
+       
     }
     
 
@@ -99,9 +102,12 @@ export class Render3d{
             const z2 = Math.min(t2.vertices[0].z, t2.vertices[1].z, t2.vertices[2].z);
             return z2 - z1;
           });
+        
+        this.drawTriangles(sortedTriangles, settings)
+    }
 
-
-        sortedTriangles.forEach(triangle=>{
+    private drawTriangles(triangles: Triangle[], settings: RenderSettings = {}){
+        triangles.forEach(triangle=>{
             if(settings.isPoint)
                 Point.draw(this._graphics.context, triangle.vertices,{color: triangle.color, isSquare: false, size: 5})
             else
