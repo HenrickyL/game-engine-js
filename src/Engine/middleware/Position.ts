@@ -1,4 +1,3 @@
-import { Vector3d } from "../3D/Vector3d"
 import { Vector } from "./Vector"
 
 
@@ -62,13 +61,6 @@ export class Position{
         this.y = position.y
     }
 
-    public moveToPos(position: Vector3d):void{
-        this.x = position.x
-        this.y = position.y
-        this.z = position.z
-
-    }
-
     public translateTo(delta: Vector){
         this.x += delta.x
         this.y += delta.y
@@ -76,7 +68,7 @@ export class Position{
     }
 
 
-    static get Default():Position{
+    static get Zero():Position{
         return new Position()
     }
 

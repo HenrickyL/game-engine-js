@@ -11,9 +11,9 @@ export class Input{
     private static _offsetY: number =0
 
     private static _onMouseClick : boolean = false
-    private static _mousePosition: Position = Position.Default
-    private static _mouseClickPosition: Position = Position.Default
-    private static _mouseClickUpPosition: Position = Position.Default
+    private static _mousePosition: Position = Position.Zero
+    private static _mouseClickPosition: Position = Position.Zero
+    private static _mouseClickUpPosition: Position = Position.Zero
     private static _mouseWheel: number = 0
     private static _lastMouseWheelTime: number = 0
     private static _timeResetDelay: number = 600

@@ -26,6 +26,16 @@ export class Color {
         return new Color(modifiedR, modifiedG, modifiedB, this._a);
     }
 
+    interpolate(otherColor: Color, t: number): Color {
+        // Interpolação linear entre as cores
+        const interpolatedR = Math.round((1 - t) * this._r + t * otherColor._r);
+        const interpolatedG = Math.round((1 - t) * this._g + t * otherColor._g);
+        const interpolatedB = Math.round((1 - t) * this._b + t * otherColor._b);
+        const interpolatedA = (1 - t) * this._a + t * otherColor._a;
+
+        return new Color(interpolatedR, interpolatedG, interpolatedB, interpolatedA);
+    }
+
     //
 
     get r(): number {

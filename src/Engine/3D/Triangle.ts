@@ -1,21 +1,47 @@
 import { Color } from "../middleware/Color";
-import { Vector3DMiddleware, Vector3d } from "./Vector3d";
+import { Vector } from "../middleware/Vector";
 
-export interface Triangle{
-    vertices: Vector3d[]
-    color: Color
-}
-
-export abstract class TriangleMiddleware{
-    static isNegativeNormal(triangle: Triangle): boolean{
-        const result = Vector3DMiddleware.normalTriangle(triangle)
-        return  result.z<0
+export class Triangle{
+    private _vertices: Vector[] = []
+    private _color: Color = Color.BLUE
+    constructor(vertices: Vector[], color: Color = Color.getRandom()){
+        this._vertices = vertices
+        this._color = color
     }
 
-    static generate(vertices: Vector3d[], color: Color= Color.getRandom()):Triangle{
-        return{
-            vertices,
-            color
-        }
+    normalVector(): Vector{
+        return Triangle.normalVector(this)
+    }
+    isNegativeNormal(): boolean{
+        return Triangle.isNegativeNormal(this)
+    }
+
+
+    //-------------------------------------
+    static normalVector(triangle: Triangle): Vector{
+        const p1 = triangle.vertices[0]
+        const p2 = triangle.vertices[1]
+        const p3 = triangle.vertices[2]
+
+        const A = Vector.unitary(Vector.vectorTo(p1,p2))
+        const B =  Vector.unitary(Vector.vectorTo(p2,p3))
+        return Vector.crossProduct(A,B)
+    }
+
+    static isNegativeNormal(triangle: Triangle): boolean{
+        const result = Triangle.normalVector(triangle)
+        return  result.z<0
+    }
+    //------------------------------------
+
+    get vertices(): Vector[]{
+        return this._vertices
+    }
+
+    get color(): Color{
+        return this._color
+    }
+    set color(color: Color){
+        this._color = color
     }
 }

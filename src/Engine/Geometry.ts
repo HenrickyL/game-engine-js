@@ -1,4 +1,3 @@
-import { Vector3d } from "./3D/Vector3d";
 import { GeometryParamInvalidError, PolygonEdgesError } from "./Errors";
 import { GeometryType } from "./enums/GeometryType";
 import { Color } from "./middleware/Color";
@@ -131,7 +130,7 @@ export class Point extends Geometry{
     get size():number{
         return this._size
     }
-    static draw(context: CanvasRenderingContext2D, points: Vector3d[] = [],settings: DrawPointSettings = {}){
+    static draw(context: CanvasRenderingContext2D, points: Vector[] = [],settings: DrawPointSettings = {}){
         const size = settings.size || 3
         points.forEach(point=>{
             context.save();
@@ -324,7 +323,7 @@ export class Polygon extends Geometry{
     }
 
 
-    static draw(context: CanvasRenderingContext2D, points: Vector3d[], settings: PolygonDrawSettings = {}){
+    static draw(context: CanvasRenderingContext2D, points: Vector[], settings: PolygonDrawSettings = {}){
         if(points.length<3)return
         context.save()
 

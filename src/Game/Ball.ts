@@ -16,7 +16,7 @@ export class Ball extends GameObject{
     private static _radius: number = 15
     private _player: Player
     
-    constructor(player: Player = new Player(Position.Default)){
+    constructor(player: Player = new Player(Position.Zero)){
         super(player.position, new Circle(player.position, Ball._radius, Color.RED))
         this.speedMag = 8
         this._player = player

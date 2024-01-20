@@ -1,11 +1,9 @@
 import { Point, Polygon } from "../Geometry"
 import { Graphics } from "../Graphics"
-import { Color } from "../middleware/Color"
 import { Vector } from "../middleware/Vector"
 import { Matrix4x4 } from "./Matrix4x4"
 import { Mesh } from "./Mesh"
-import { Triangle, TriangleMiddleware } from "./Triangle"
-import { Vector3DMiddleware, Vector3d } from "./Vector3d"
+import { Triangle } from "./Triangle"
 
 /*
 a : Proportion = hight/width
@@ -51,7 +49,7 @@ export class Render3d{
     private _matRotY: Matrix4x4 = new Matrix4x4()
 
     //init can
-    private _camera: Vector3d
+    private _camera: Vector
     //light
     private _lightDirection: Vector
 
@@ -64,8 +62,8 @@ export class Render3d{
 
     constructor(graphics: Graphics, theta: number = 90, zNear: number = 0, zFar:number = 0){
         this._graphics = graphics
-        this._camera = {x:0,y:0,z:0}
-        this._lightDirection = new Vector(0,0,-1)
+        this._camera = Vector.Zero
+        this._lightDirection = Vector.Backward
         this.setProjectionParams(graphics.width, graphics.height, theta, zFar, zNear)
     }
 
@@ -186,25 +184,21 @@ export class Render3d{
         
     }
 
-    private onSeeTriangle(triangle: Triangle, normal: Vector3d): boolean{
+    private onSeeTriangle(triangle: Triangle, normal: Vector): boolean{
         if(this._onWireframe) return true;
         const v = triangle.vertices
         //same plane, so i can take any point
-        const adjust:Vector3d = {
-            x: (v[0].x - this._camera.x),
-            y: (v[0].y - this._camera.y),
-            z: (v[0].z - this._camera.z)
-        } 
-        return Vector3DMiddleware.dotProduct(normal,adjust) < 0
+        const adjust:Vector = v[0].sub(this._camera)
+        return Vector.dotProduct(normal,adjust) < 0
     }
 
 
     private projectVertex(triangle: Triangle): Triangle | null{
         const triangleTranslated = this.preProjectionCalculation(triangle)
-        const normal: Vector3d = Vector3DMiddleware.normalTriangle(triangleTranslated)
+        const normal: Vector = Triangle.normalVector(triangleTranslated)
 
         if(this.onSeeTriangle(triangleTranslated, normal)){
-            const result: Vector3d[] = triangleTranslated.vertices
+            const result: Vector[] = triangleTranslated.vertices
             .map(vertex=>{
                 const res = this.multiplyMatrixVector(vertex, this._matrixProjection)
 
@@ -215,47 +209,43 @@ export class Render3d{
                 res.y *= 0.5 * this._height 
                 return res
             })
-            const resultTriangle = TriangleMiddleware.generate(result, triangle.color)
+            const resultTriangle = new Triangle(result, triangle.color)
             return this.lightCalculation(resultTriangle, normal)
         }
         return null
     }
-    private lightCalculation(triangle: Triangle, normal: Vector3d): Triangle{
+    private lightCalculation(triangle: Triangle, normal: Vector): Triangle{
         const light = this._lightDirection
         const lightUnit = light.unitary()
-        const lightVecUnit: Vector3d = {x: lightUnit.x, y: lightUnit.y, z: lightUnit.z}
-        const luminosity = Vector3DMiddleware.dotProduct(lightVecUnit, normal)
+        
+        const luminosity = Vector.dotProduct(lightUnit, normal)
         triangle.color = triangle.color.modifyColor(luminosity)
         return triangle
     }
 
     private preProjectionCalculation(triangle: Triangle): Triangle{
         const vertices = triangle.vertices
-        const result: Triangle = TriangleMiddleware.generate([], triangle.color)
+        const result: Triangle = new Triangle([], triangle.color)
 
         vertices.forEach(vertex=>{
             const vY = this.multiplyMatrixVector(vertex, this._matRotY)
             const vZ = this.multiplyMatrixVector(vY, this._matRotZ)
             const v = this.multiplyMatrixVector(vZ, this._matRotX)
             // const v = vertex
-            const translatedVertex = {
-                x: v.x,
-                y: v.y,
-                z: v.z+ this._zDistance
-            }
+            const translatedVertex = new Vector(v.x, v.y, v.z + this._zDistance)
             result.vertices.push(translatedVertex)
         })
         return result
     }
 
 
-    private multiplyMatrixVector(p: Vector3d, matrix: Matrix4x4): Vector3d{
+    private multiplyMatrixVector(p: Vector, matrix: Matrix4x4): Vector{
         const m = matrix.matrix
-        const result: Vector3d  = {
-            x:  p.x * m[0][0] + p.y * m[1][0] + p.z * m[2][0] + m[3][0],
-            y:  p.x * m[0][1] + p.y * m[1][1] + p.z * m[2][1] + m[3][1],
-            z:  p.x * m[0][2] + p.y * m[1][2] + p.z * m[2][2] + m[3][2]
-        }
+        const result: Vector  = new Vector(
+            p.x * m[0][0] + p.y * m[1][0] + p.z * m[2][0] + m[3][0],
+            p.x * m[0][1] + p.y * m[1][1] + p.z * m[2][1] + m[3][1],
+            p.x * m[0][2] + p.y * m[1][2] + p.z * m[2][2] + m[3][2]
+        )
         const w = p.x * m[0][3] + p.y * m[1][3] + p.z *m[2][3] + m[3][3]
         if(w !== 0){
             result.x /= w

@@ -8,7 +8,6 @@ import { InputKeys } from "./Engine/enums"
 import { Input } from "./Engine/Input"
 import { Color } from "./Engine/middleware/Color"
 import { Point, Polygon } from "./Engine/Geometry"
-import { Vector3d } from "./Engine/3D/Vector3d"
 import { Text } from "./Engine/middleware/Text"
 import { Vector } from "./Engine/middleware/Vector"
 import { Timer } from "./Engine/Timer"
@@ -30,8 +29,8 @@ const EngineStart= async()=>{
     const tree = await test.getObj('src\\public\\tree.obj')
     const sphere = await test.getObj('src\\public\\sphere.obj')
     const object = await test.getObj('src\\public\\Jeep.obj')
-    const log = new Text("test",graphics.bottomRight, {color:Color.BLUE, size:30})
-    log.translateTo(new Vector(-50,0))
+    const log = new Text("test",graphics.bottomRight, {color:Color.BLUE, size:28})
+    log.translateTo(new Vector(-60,0))
     const timer = new Timer()
     let sum = 0
     let count = 0
@@ -112,10 +111,14 @@ const EngineStart= async()=>{
         timer.resetTimer()
         graph.render(mesh, {isPoint, isColor})
         timer.stopTimer()
-        sum += timer.getElapsedMiliSeconds()
+        const value = timer.getElapsedMiliSeconds()
+        sum += value
         count++
-        log.text = `${(sum/count).toFixed(3)}`
-        log.draw(graphics.context)
+        if(count !=0){
+          const av = sum/count
+          log.text = `${av.toFixed(3)} ms`
+          log.draw(graphics.context)
+        }
     }, 1000/45)
   }
 }
@@ -124,19 +127,18 @@ const EngineStart= async()=>{
 const testInput = ()=>{
   const graphics = new Graphics()
   Input.generate(graphics.canvas)
-  const log = new Text("aaa",graphics.middleCenter, {color:Color.RED, size:20})
 
 
   if(!start){
     graphics.clear()
     start = true
-    const a1:Vector3d = {x:10,y:100,z:100}
-    const a2:Vector3d = {x:70,y:40,z:0}
-    const a3:Vector3d = {x:20,y:200,z:0}
+    const a1: Vector = new Vector(10, 100, 100);
+    const a2: Vector = new Vector(70, 40, 0);
+    const a3: Vector = new Vector(20, 200, 0);
 
-    const b1:Vector3d = {x:40,y:50,z:0}
-    const b2:Vector3d = {x:70,y:40,z:40}
-    const b3:Vector3d = {x:20,y:200,z:0}
+    const b1: Vector = new Vector(40, 50, 0);
+    const b2: Vector = new Vector(70, 40, 40);
+    const b3: Vector = new Vector(20, 200, 0);
 
     const color = new Color(0, 255, 0)
 
@@ -144,7 +146,6 @@ const testInput = ()=>{
     Polygon.draw(graphics.context,[b1, b2,b3],{fillColor: color})
 
     Point.draw(graphics.context,[a1,a2,a3],{color: Color.BLACK, size:5})
-    log.draw(graphics.context)
   }
 }
 
