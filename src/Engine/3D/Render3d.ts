@@ -59,7 +59,10 @@ export class Render3d{
     private _angleYRad: number = 0
     private _zDistance:number = 2
 
-    
+    //
+    private _lastRender: Triangle[] = []
+    private _isChanged: boolean = true
+
 
     constructor(graphics: Graphics, theta: number = 90, zNear: number = 0, zFar:number = 0){
         this._graphics = graphics
@@ -82,12 +85,20 @@ export class Render3d{
         this.calculatedMatrixRotateZ()
         this.calculatedMatrixRotateY()
 
-       
+        if(!this._isChanged){
+            this._isChanged = true
+        }
     }
     
 
     render(mesh: Mesh, settings: RenderSettings = {}){
         this._graphics.clear()
+       
+        const sortedTriangles = this.projectTrianglesAndSort(mesh)
+        this.drawTriangles(sortedTriangles, settings)
+        this._lastRender = sortedTriangles
+    }
+    private projectTrianglesAndSort(mesh: Mesh):Triangle[]{
         const trianglesToDraw: Triangle[] = []
         mesh.triangles.forEach(triangle =>{
             const projectedTriangle = this.projectVertex(triangle)
@@ -102,8 +113,7 @@ export class Render3d{
             const z2 = Math.min(t2.vertices[0].z, t2.vertices[1].z, t2.vertices[2].z);
             return z2 - z1;
           });
-        
-        this.drawTriangles(sortedTriangles, settings)
+        return sortedTriangles
     }
 
     private drawTriangles(triangles: Triangle[], settings: RenderSettings = {}){
