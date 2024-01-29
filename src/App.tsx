@@ -126,27 +126,11 @@ const EngineStart= async()=>{
 
 
 const testInput = ()=>{
-  const graphics = new Graphics()
-  Input.generate(graphics.canvas)
-
-
   if(!start){
-    graphics.clear()
     start = true
-    const a1: Vector = new Vector(10, 100, 100);
-    const a2: Vector = new Vector(70, 40, 0);
-    const a3: Vector = new Vector(20, 200, 0);
-
-    const b1: Vector = new Vector(40, 50, 0);
-    const b2: Vector = new Vector(70, 40, 40);
-    const b3: Vector = new Vector(20, 200, 0);
-
-    const color = new Color(0, 255, 0)
-
-    Polygon.draw(graphics.context,[a1, a2,a3],{fillColor:Color.RED})
-    Polygon.draw(graphics.context,[b1, b2,b3],{fillColor: color})
-
-    Point.draw(graphics.context,[a1,a2,a3],{color: Color.BLACK, size:5})
+    const game = new GameTest()
+    const engine = new Engine(true)
+    engine.start(game)
   }
 }
 
@@ -164,8 +148,8 @@ function App() {
 
       const asyncFunc = async()=>{
         try {
-          await EngineStart()
-          // testInput()
+          // await EngineStart()
+          testInput()
         } catch (error) {
           console.error(error)
         }

@@ -89,7 +89,6 @@ export class Input{
         return elapsed > elapseTime
     }
     private onMouseWheel(event: WheelEvent){
-
         if(Input.onElapsed(Input._lastMouseWheelTime, Input._lastMouseWheelTime)){
             Input._mouseWheel = 0
         }else{
