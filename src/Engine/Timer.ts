@@ -1,3 +1,5 @@
+import { MathMiddleware } from "./middleware"
+
 export class Timer{
     private start: number
     private end: number
@@ -54,13 +56,6 @@ export class Timer{
         let time = (this.getElapsedMiliSeconds() / 1000)
 
         
-        return this.adjustPrecision(time,3)
+        return MathMiddleware.adjustPrecision(time,3)
     }
-
-    private adjustPrecision(num: number, precision:number):number{
-        const multiply = Math.pow(10,precision)
-        return Math.round(num * multiply) / multiply
-    }
-
-
 }

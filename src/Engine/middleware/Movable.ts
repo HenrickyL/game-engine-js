@@ -22,11 +22,14 @@ export abstract class Movable{
     public moveTo(position: Position):void{
         this._position.x = position.x
         this._position.y = position.y
+        this._position.z = position.z
+
     }
 
     public translateTo(delta: Vector){
         this._position.x += delta.x
         this._position.y += delta.y
+        this._position.z += delta.z
     }
 
 
@@ -46,6 +49,9 @@ export abstract class Movable{
 
     get y():number{
         return this._position.y
+    }
+    get z():number{
+        return this._position.z
     }
 
     get speed():Vector{
@@ -84,5 +90,9 @@ export abstract class Movable{
 
     set anchorY(value:number){
         this._anchor.y = value
+    }
+
+    set anchorZ(value:number){
+        this._anchor.z = value
     }
 }

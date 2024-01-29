@@ -8,15 +8,15 @@ export class Graphics{
     private _height: number
 
 
-    private _topLeft: Position = Position.Default
-    private _topCenter: Position = Position.Default
-    private _topRight: Position = Position.Default
-    private _middleLeft: Position = Position.Default
-    private _middleCenter: Position = Position.Default
-    private _middleRight: Position = Position.Default
-    private _bottomLeft: Position = Position.Default
-    private _bottomCenter: Position = Position.Default
-    private _bottomRight: Position = Position.Default
+    private _topLeft: Position = Position.Zero
+    private _topCenter: Position = Position.Zero
+    private _topRight: Position = Position.Zero
+    private _middleLeft: Position = Position.Zero
+    private _middleCenter: Position = Position.Zero
+    private _middleRight: Position = Position.Zero
+    private _bottomLeft: Position = Position.Zero
+    private _bottomCenter: Position = Position.Zero
+    private _bottomRight: Position = Position.Zero
 
     constructor(width: number = 800, height: number =600){
         this._width = width
@@ -65,8 +65,11 @@ export class Graphics{
     }
 
     public clear(): void{
-        if(this._context)
+        if(this._context){
+            this._context.fillStyle = "gray"
             this._context.clearRect(0,0, this.width, this.height)
+            this._context.fillRect(0,0, this.width, this.height)
+        }
     }
 
     private calculateCornersAndCenters() {

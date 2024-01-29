@@ -1,7 +1,7 @@
 import { GameObject } from "../Engine/GameObject";
 import { Circle } from "../Engine/Geometry";
 import { Timer } from "../Engine/Timer";
-import { randFloat, randInt } from "../Engine/middleware";
+import { MathMiddleware } from "../Engine/middleware";
 import { Color } from "../Engine/middleware/Color";
 import { Position } from "../Engine/middleware/Position";
 import { Vector } from "../Engine/middleware/Vector";
@@ -16,7 +16,7 @@ export class Ball extends GameObject{
     private static _radius: number = 15
     private _player: Player
     
-    constructor(player: Player = new Player(Position.Default)){
+    constructor(player: Player = new Player(Position.Zero)){
         super(player.position, new Circle(player.position, Ball._radius, Color.RED))
         this.speedMag = 8
         this._player = player
@@ -27,8 +27,8 @@ export class Ball extends GameObject{
 
     start(){
         if(!this._start){
-            const direction = randInt(-2,2) > 0 ? Vector.Right  : Vector.Left 
-            this.speed = Vector.Up.add( direction.prod(randFloat(0.7, 1.3)) )
+            const direction = MathMiddleware.randInt(-2,2) > 0 ? Vector.Right  : Vector.Left 
+            this.speed = Vector.Up.add( direction.prod(MathMiddleware.randFloat(0.7, 1.3)) )
             this._positionInitial = new Position(this._player.x, this._player.top - Ball.radius )
             this.moveTo(this._positionInitial)
             this._start = true
@@ -59,7 +59,7 @@ export class Ball extends GameObject{
     }
     onCollision(obj: GameObject): void {
        if(obj instanceof Player){
-        this.speed.invertY(randFloat(0.9, 1.1))
+        this.speed.invertY(MathMiddleware.randFloat(0.9, 1.1))
        }else if(obj instanceof Block){
         this._reset = true
         this._start = false
