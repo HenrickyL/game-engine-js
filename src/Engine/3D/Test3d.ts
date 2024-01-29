@@ -48,7 +48,7 @@ export class Test3d {
             const geometry = obj.geometry as THREE.BufferGeometry;
             if (geometry) {
                 const positions = geometry.attributes.position.array;
-                console.log(positions.length / 3);
+                console.log('triangles ', positions.length / 3);
                 if (positions.length / 3 > 150000) {
                     throw new ObjLoaderPerformanceError();
                 }

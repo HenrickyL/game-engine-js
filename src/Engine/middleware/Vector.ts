@@ -3,7 +3,7 @@ export class Vector{
         private _x: number = 0,
         private _y: number = 0,
         private _z: number = 0,
-        private _w: number = 0
+        private _w: number = 1
     ){}
     get x(): number{
         return this._x
